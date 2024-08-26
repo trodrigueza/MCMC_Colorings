@@ -1171,6 +1171,200 @@ bar!(dfv.q, dfv.Time, label="eps = 0.9", color=:orange, secondary=true, bar_widt
 plot(pt1, pt3, pt2, layout=layout, size=(1000, 800))
 end
 
+# ╔═╡ eb41a25c-7e74-4144-aaaf-6ba05e3097f0
+md"""
+---
+$\textbf{k=10}$
+"""
+
+# ╔═╡ 5daa5df3-8aea-4f1a-ba38-753a7f7b6f9b
+md"""
+---
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 1000000$
+"""
+
+# ╔═╡ 4f7530c9-4744-4c67-91f5-e77948053e3b
+file_path_x = "../results/q-colorings/k=10/eps=1.csv"
+
+# ╔═╡ 200eaef4-f500-4d78-9725-fe6183563943
+dfx = CSV.File(file_path_x, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 2337aaa1-820c-469e-85d8-0de47c26223b
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 100000$
+"""
+
+# ╔═╡ e8ff12e9-d637-4f81-ae2d-cd4120d3b127
+file_path_y = "../results/q-colorings/k=10/sims=1e5.csv"
+
+# ╔═╡ 9e17f7b5-95b6-4945-99e7-965bc65ce9b6
+dfy = CSV.File(file_path_y, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ feab2f26-13b2-4aca-a2ad-8adc7c5eafcc
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 50000$
+"""
+
+# ╔═╡ a1257066-754e-4a38-a711-ec5af82207c0
+file_path_z = "../results/q-colorings/k=10/sims=5e4.csv"
+
+# ╔═╡ 045d40c6-deab-45c8-8995-8407d4832276
+dfz = CSV.File(file_path_z, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 2a712fb7-673a-4c9a-9aff-f5f882a4761c
+begin
+pu1 = plot(dfx.q, dfx.Res⭑, label="Respuesta Real", linewidth=0.5, marker=:star, color=:red, markersize=5, size=(550, 350), yscale=:log10, leg=:bottomright, ylimits = (1e0, 1e100), title="Estimación vs Respuesta Real L_10", titlefontsize=13);
+	
+plot!(dfx.q, dfx.Est, label="Estimación eps = 1", xlabel="q", ylabel="Valor", linewidth=0.7, marker=:rect, color=:blue, alpha=0.5, markersize=3.5);
+	
+plot!(dfy.q, dfy.Est, label="Estimación num_sims = 1e5", linewidth=0.7, marker=:diamond, color=:green, alpha=0.5, markersize=3);
+
+plot!(dfz.q, dfz.Est, label="Estimación num_sims = 5e4", xlabel="q", ylabel="Valor", linewidth=0.7, marker=:circle, color=:orange, alpha=0.5, markersize=3.5);
+
+
+pu2 = plot(dfx.q, dfx.R_err, label="eps = 1", color=:blue, xlabel="q", ylabel="Error relativo (%)", marker=:rect, size=(550, 350), title="Comparación errores relativos L_10", titlefontsize=15)
+
+plot!(dfy.q, dfy.R_err, label="num_sims = 1e5", marker=:diamond, color=:green)
+	
+plot!(dfz.q, dfz.R_err, label="num_sims = 5e4", color=:orange, marker=:circle, secondary=true)
+
+
+pu3 = bar(dfx.q, dfx.Time, label="eps = 1", color=:blue, xlabel="q", ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.5, title="Comparación tiempos L_10", titlefontsize=13)
+
+bar!(dfy.q, dfy.Time, label="num_sims = 1e5", color=:green, ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.55)
+	
+bar!(dfz.q, dfz.Time, label="num_sims = 5e4", color=:orange, secondary=true, bar_width=0.6)
+
+plot(pu1, pu3, pu2, layout=layout, size=(1000, 800))
+end
+
+# ╔═╡ b3772b0e-3022-46ed-8ea7-a4fa64c01a43
+md"""
+---
+$\textbf{k=11}$
+"""
+
+# ╔═╡ 086cd178-b2c0-4dd8-b4a8-5f22ad0718d0
+md"""
+---
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 1771561$
+"""
+
+# ╔═╡ 1fbc185b-e7af-4a49-b2d5-a582bc3f658e
+file_path_aa = "../results/q-colorings/k=11/eps=1.csv"
+
+# ╔═╡ 42976fef-fb3c-4cb4-94a9-8cac5db8fce9
+dfaa = CSV.File(file_path_aa, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 9c06873d-60f9-4850-b789-ec85030bec12
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 100000$
+"""
+
+# ╔═╡ 061737cd-0d64-4e74-800d-47cddb3c6368
+file_path_ab = "../results/q-colorings/k=11/sims=1e5.csv"
+
+# ╔═╡ 7460ae37-8214-4a6e-bbec-a7016baa0320
+dfab = CSV.File(file_path_ab, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ d6ebfb27-e7d7-43ca-8ac9-864e5e43373e
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 50000$
+"""
+
+# ╔═╡ 4670de0d-ed22-4e12-b238-3d7176d74b08
+file_path_ac = "../results/q-colorings/k=11/sims=5e4.csv"
+
+# ╔═╡ c8382cfb-7046-471a-9a79-2b7022697deb
+dfac = CSV.File(file_path_ac, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 5d0280b4-da6d-40e9-b5cb-b26dab1b273c
+begin
+pv1 = plot(dfaa.q, dfaa.Res⭑, label="Respuesta Real", linewidth=0.5, marker=:star, color=:red, markersize=5, size=(550, 350), yscale=:log10, leg=:bottomright, ylimits = (1e0, 1e115), title="Estimación vs Respuesta Real L_11", titlefontsize=13);
+	
+plot!(dfaa.q, dfaa.Est, label="Estimación eps = 1", xlabel="q", ylabel="Valor", linewidth=0.7, marker=:rect, color=:blue, alpha=0.5, markersize=3.5);
+	
+plot!(dfab.q, dfab.Est, label="Estimación num_sims = 1e5", linewidth=0.7, marker=:diamond, color=:green, alpha=0.5, markersize=3);
+
+plot!(dfac.q, dfac.Est, label="Estimación num_sims = 5e4", xlabel="q", ylabel="Valor", linewidth=0.7, marker=:circle, color=:orange, alpha=0.5, markersize=3.5);
+
+
+pv2 = plot(dfaa.q, dfaa.R_err, label="eps = 1", color=:blue, xlabel="q", ylabel="Error relativo (%)", marker=:rect, size=(550, 350), title="Comparación errores relativos L_11", titlefontsize=15)
+
+plot!(dfab.q, dfab.R_err, label="num_sims = 1e5", marker=:diamond, color=:green)
+	
+plot!(dfac.q, dfac.R_err, label="num_sims = 5e4", color=:orange, marker=:circle, secondary=true)
+
+
+pv3 = bar(dfaa.q, dfaa.Time, label="eps = 1", color=:blue, xlabel="q", ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.5, title="Comparación tiempos L_11", titlefontsize=13)
+
+bar!(dfab.q, dfab.Time, label="num_sims = 1e5", color=:green, ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.55)
+	
+bar!(dfac.q, dfac.Time, label="num_sims = 5e4", color=:orange, secondary=true, bar_width=0.6)
+
+plot(pv1, pv3, pv2, layout=layout, size=(1000, 800))
+end
+
+# ╔═╡ 3eda40e9-31f2-48e5-9be4-88a960a0c65f
+md"""
+---
+$\textbf{k=12}$
+"""
+
+# ╔═╡ 41e33e79-7c01-4b65-9e79-718ddb1645e2
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 1000000$
+"""
+
+# ╔═╡ 55eb1b17-0bb6-4774-92cf-03e2c67aba0c
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 100000$
+"""
+
+# ╔═╡ 32d541bf-0b7a-4eb8-b17f-597e04c1aaad
+md"""
+---
+Para este ejemplo, fijaremos el número de simulaciones independiente del epsilon (solo afectará el número de pasos del Gibbs sampler).
+
+$$\epsilon=1$$
+
+$\text{num\_simulations} = 50000$
+"""
+
 # ╔═╡ 46e13271-816c-406c-9f7c-bfaec8beffdf
 md"""
 ---
@@ -1197,7 +1391,12 @@ plot!(dfe.q, dfn.Mean_r, label="k = 7", color=:pink, marker=:heptagon, secondary
 
 plot!(dfe.q, vcat(dfq.Mean_r, [0.90949, 0.91696, 0.92336, 0.92875, 0.93349]), label="k = 8", color=:brown, marker=:octagon, secondary=true, alpha = 0.3)
 
-plot!(dfq.q, dft.Mean_r, label="k = 9", color=:cyan, marker=:star, secondary=true, alpha = 0.3)
+plot!(dfe.q, vcat(dft.Mean_r, [0.90948, 0.91697, 0.92335, 0.92874, 0.93349]), label="k = 9", color=:cyan, marker=:star, secondary=true, alpha = 0.3)
+
+plot!(dfe.q, vcat(dfx.Mean_r, [0.90952, 0.91702, 0.9233, 0.92876, 0.93348]), label="k = 10", color=:blue3, marker=:star6, secondary=true, alpha = 0.3)
+
+plot!(dfe.q, vcat(dfaa.Mean_r, [0.90948, 0.91695, 0.92333, 0.92877, 0.93352]), label="k = 11", color=:red3, marker=:xcross, secondary=true, alpha = 0.3)
+
 
 title!("Comparación promedios de los ratios")
 xlabel!("q")
@@ -2936,6 +3135,32 @@ version = "1.4.1+1"
 # ╟─93e9755a-5919-4d01-8f69-e2f363088c2d
 # ╟─994c886e-e03a-47f5-b04b-647f446567b3
 # ╟─01d77131-86c4-4ffc-bb05-0f3550b09409
+# ╟─eb41a25c-7e74-4144-aaaf-6ba05e3097f0
+# ╟─5daa5df3-8aea-4f1a-ba38-753a7f7b6f9b
+# ╟─4f7530c9-4744-4c67-91f5-e77948053e3b
+# ╟─200eaef4-f500-4d78-9725-fe6183563943
+# ╟─2337aaa1-820c-469e-85d8-0de47c26223b
+# ╟─e8ff12e9-d637-4f81-ae2d-cd4120d3b127
+# ╟─9e17f7b5-95b6-4945-99e7-965bc65ce9b6
+# ╟─feab2f26-13b2-4aca-a2ad-8adc7c5eafcc
+# ╟─a1257066-754e-4a38-a711-ec5af82207c0
+# ╟─045d40c6-deab-45c8-8995-8407d4832276
+# ╟─2a712fb7-673a-4c9a-9aff-f5f882a4761c
+# ╟─b3772b0e-3022-46ed-8ea7-a4fa64c01a43
+# ╟─086cd178-b2c0-4dd8-b4a8-5f22ad0718d0
+# ╟─1fbc185b-e7af-4a49-b2d5-a582bc3f658e
+# ╟─42976fef-fb3c-4cb4-94a9-8cac5db8fce9
+# ╟─9c06873d-60f9-4850-b789-ec85030bec12
+# ╟─061737cd-0d64-4e74-800d-47cddb3c6368
+# ╟─7460ae37-8214-4a6e-bbec-a7016baa0320
+# ╟─d6ebfb27-e7d7-43ca-8ac9-864e5e43373e
+# ╟─4670de0d-ed22-4e12-b238-3d7176d74b08
+# ╟─c8382cfb-7046-471a-9a79-2b7022697deb
+# ╟─5d0280b4-da6d-40e9-b5cb-b26dab1b273c
+# ╟─3eda40e9-31f2-48e5-9be4-88a960a0c65f
+# ╟─41e33e79-7c01-4b65-9e79-718ddb1645e2
+# ╟─55eb1b17-0bb6-4774-92cf-03e2c67aba0c
+# ╟─32d541bf-0b7a-4eb8-b17f-597e04c1aaad
 # ╟─46e13271-816c-406c-9f7c-bfaec8beffdf
 # ╟─c7bba1dc-6b77-4250-bfd6-8051914d7cbb
 # ╠═be3186c4-c5c9-45f5-9050-4856b70bb2e8

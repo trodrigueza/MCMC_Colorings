@@ -71,7 +71,14 @@ big_float estimate_ratio(int k, int q, int num_simulations, int num_gibbs_steps,
   return ratio;
 }
 
-vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("6.53e+24")},{4,big_float("9.57e+46")},{5,big_float("8.57e+63")},{6,big_float("1.21e+77")},{7,big_float("5.36e+87")},{8,big_float("4.39e+96")},{9,big_float("1.97e+104")},{10,big_float("9.84e+110")}};
+// k = 10
+// vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("5.08e+20")},{4,big_float("1.06e+39")},{5,big_float("1e+53")},{6,big_float("6.97e+63")},{7,big_float("4.19e+72")},{8,big_float("9.4e+79")},{9,big_float("1.93e+86")},{10,big_float("6.48e+91")}};
+// k = 11
+// vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("6.53e+24")},{4,big_float("9.57e+46")},{5,big_float("8.57e+63")},{6,big_float("1.21e+77")},{7,big_float("5.36e+87")},{8,big_float("4.39e+96")},{9,big_float("1.97e+104")},{10,big_float("9.84e+110")}};
+// k = 12
+// vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("1.98e+29")},{4,big_float("4.7e+55")},{5,big_float("7.72e+75")},{6,big_float("3.71e+91")},{7,big_float("1.83e+104")},{8,big_float("7.73e+114")},{9,big_float("1.02e+124")},{10,big_float("9.82e+131")}};
+// k = 13
+vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("1.43e+34")},{4,big_float("1.26e+65")},{5,big_float("7.35e+88")},{6,big_float("2.01e+107")},{7,big_float("1.67e+122")},{8,big_float("5.14e+134")},{9,big_float("2.69e+145")},{10,big_float("6.45e+154")}};
 int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
@@ -89,7 +96,8 @@ int main() {
   gen_edges(k, edges, m); // generate edges
 
   // int num_simulations = static_cast<int>(ceil(48 * pow(big_float(4), 3) * pow(big_float(n), 3) / (epsilon * epsilon)));
-  int num_simulations = static_cast<int>(pow(big_float(n), 3) / (epsilon * epsilon));
+  // int num_simulations = static_cast<int>(pow(big_float(n), 3) / (epsilon * epsilon));
+  int num_simulations = 1000000;
   // cout << "Sims: " << num_simulations << ", steps: " << num_gibbs_steps << "\n";
   cout << "Sims: " << num_simulations << "\n";
 

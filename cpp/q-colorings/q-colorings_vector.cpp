@@ -72,6 +72,7 @@ big_float estimate_ratio(int k, int q, int num_simulations, int num_gibbs_steps,
 int main() {
   int k, q;
   big_float epsilon;
+  cout << "Enter k for lattice size kxk and epsilon: ";
   cin >> k >> q >> epsilon; // read k, q and eps from input
   int n = k * k; // |V|
   auto lattice = create_lattice(k, q);
