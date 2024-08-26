@@ -1,0 +1,159 @@
+Notebook[{Cell[
+BoxData[RowBox[{RowBox[{"LatticeGraph","[","k_","]"}]," ",":="," ",RowBox[
+{"GridGraph","[",RowBox[{"{",RowBox[{"k",","," ","k"}],"}"}],"]"}]}]],"Input",CellLabel -> "In[2]:= ",
+ExpressionUUID -> "a9e0a707-6071-4984-81b5-c71ea2274e0a"],Cell[
+BoxData[{RowBox[{RowBox[
+{RowBox[{"PC","[",RowBox[{"k_",","," ","x_"}],"]"}]," ",":="," ",RowBox[{"ChromaticPolynomial","[",RowBox[
+{RowBox[{"LatticeGraph","[","k","]"}],","," ","x"}],"]"}]}],";"}],"\n",RowBox[{RowBox[
+{"x"," ","="," ",RowBox[{"Symbol","[","\"x\"","]"}]}],";"}]}],"Input",CellLabel -> "In[3]:= ",
+ExpressionUUID -> "4e251592-d034-4b84-a0a6-e07930c5f73f"],Cell[
+BoxData[RowBox[{"(*",RowBox[
+{"Chromatic"," ","Polynomial"," ","of"," ","a"," ","5","x5"," ","lattice"}],"*)"}]],
+"Input",ExpressionUUID -> "d74f85af-1a20-40eb-941f-ef5a92cf0d10"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"pc5"," ","="," ",RowBox[{"PC","[",RowBox[{"5",","," ","x"}],"]"}]," "}]],
+"Input",CellLabel -> "In[6]:= ",ExpressionUUID -> "8c50ec60-af70-4908-ae5a-4e97cbd12fa6"],Cell[
+BoxData[
+RowBox[{RowBox[{"32126211"," ","x"}],"-",RowBox[{"290435775"," ",SuperscriptBox["x",
+"2"]}],"+",RowBox[{"1292190143"," ",SuperscriptBox["x","3"]}],"-",RowBox[{"3767970906"," ",SuperscriptBox[
+"x","4"]}],"+",RowBox[{"8082227271"," ",SuperscriptBox["x","5"]}],"-",RowBox[{"13560791041"," ",SuperscriptBox[
+"x","6"]}],"+",RowBox[{"18473119556"," ",SuperscriptBox["x","7"]}],"-",RowBox[{"20932275014"," ",SuperscriptBox[
+"x","8"]}],"+",RowBox[{"20054961996"," ",SuperscriptBox["x","9"]}],"-",RowBox[{"16429209737"," ",SuperscriptBox[
+"x","10"]}],"+",RowBox[{"11594826096"," ",SuperscriptBox["x","11"]}],"-",RowBox[{"7082871652"," ",SuperscriptBox[
+"x","12"]}],"+",RowBox[{"3754018486"," ",SuperscriptBox["x","13"]}],"-",RowBox[{"1726958903"," ",SuperscriptBox[
+"x","14"]}],"+",RowBox[{"688444232"," ",SuperscriptBox["x","15"]}],"-",RowBox[{"236955938"," ",SuperscriptBox[
+"x","16"]}],"+",RowBox[{"69997383"," ",SuperscriptBox["x","17"]}],"-",RowBox[{"17590911"," ",SuperscriptBox[
+"x","18"]}],"+",RowBox[{"3714180"," ",SuperscriptBox["x","19"]}],"-",RowBox[{"647352"," ",SuperscriptBox[
+"x","20"]}],"+",RowBox[{"90798"," ",SuperscriptBox["x","21"]}],"-",RowBox[{"9864"," ",SuperscriptBox[
+"x","22"]}],"+",RowBox[{"780"," ",SuperscriptBox["x","23"]}],"-",RowBox[{"40"," ",SuperscriptBox[
+"x","24"]}],"+",SuperscriptBox["x","25"]}],StandardForm],"Output",CellLabel -> "Out[6]= ",
+ExpressionUUID -> "dc346fe1-9365-464e-8b24-920729de6864"]},Open],ExpressionUUID -> "56c7bd42-d3ce-4190-ab39-d7c45efbcd72"],Cell[
+BoxData[
+RowBox[{"(*",RowBox[{"10"," ","colorings"," ","of"," ","a"," ","5","x5"," ","lattice"}],"*)"}]],
+"Input",CellLabel -> "In[8]:= ",ExpressionUUID -> "21c79798-baaa-45b7-a82f-7934e91b8f80"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"pc5","/."," ",RowBox[{"x"," ","\[Rule]"," ","10"," "," "}]}]],
+"Input",ExpressionUUID -> "0ecc306e-881c-4712-9d20-17cb2578c16c"],Cell[
+BoxData["151086899096935604867610",
+StandardForm],"Output",CellLabel -> "Out[15]= ",ExpressionUUID -> "c593df13-396f-498e-8977-c8ef4607bc9e"]},
+Open],ExpressionUUID -> "801ae1f7-ff62-4ded-8154-f602d46f4662"],Cell[
+BoxData[RowBox[
+{"(*",RowBox[{"k","=","2"}],"*)"}]],"Input",ExpressionUUID -> "81462ed3-39c8-4f35-9f64-3dff9650a081"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"results2"," ","="," ",RowBox[{"Table","[",RowBox[{RowBox[
+{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"2",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]],"Input",CellLabel -> "In[9]:= ",
+ExpressionUUID -> "b7cdfa9c-531f-4f62-aedf-303b03b44bd1"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[{"3",",","18"}],"}"}],",",RowBox[
+{"{",RowBox[{"4",",","84"}],"}"}],",",RowBox[{"{",RowBox[{"5",",","260"}],"}"}],",",RowBox[
+{"{",RowBox[{"6",",","630"}],"}"}],",",RowBox[{"{",RowBox[{"7",",","1302"}],"}"}],",",RowBox[
+{"{",RowBox[{"8",",","2408"}],"}"}],",",RowBox[{"{",RowBox[{"9",",","4104"}],"}"}],",",RowBox[
+{"{",RowBox[{"10",",","6570"}],"}"}],",",RowBox[{"{",RowBox[{"11",",","10010"}],"}"}],",",RowBox[
+{"{",RowBox[{"12",",","14652"}],"}"}],",",RowBox[{"{",RowBox[{"13",",","20748"}],"}"}],",",RowBox[
+{"{",RowBox[{"14",",","28574"}],"}"}],",",RowBox[{"{",RowBox[{"15",",","38430"}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[9]= ",ExpressionUUID -> "feed8e1b-d963-4da5-badb-38ddb65cce8e"]},
+Open],ExpressionUUID -> "f197eed2-a2ac-4de4-9bce-aee7a90666b4"],Cell[
+BoxData[RowBox[
+{"(*",RowBox[{"k","=","3"}],"*)"}]],"Input",CellLabel -> "In[2]:= ",ExpressionUUID -> "79ebac7b-3905-4ae6-807e-9da47e4f73df"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"results3"," ","="," ",RowBox[{"Table","[",RowBox[{RowBox[
+{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"3",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]],"Input",CellLabel -> "In[16]:= ",
+ExpressionUUID -> "b5d51a68-5dc9-40ea-9a3f-b9a8f3a26d05"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[{"3",",","246"}],"}"}],",",RowBox[
+{"{",RowBox[{"4",",","9612"}],"}"}],",",RowBox[{"{",RowBox[{"5",",","142820"}],"}"}],",",RowBox[
+{"{",RowBox[{"6",",","1166910"}],"}"}],",",RowBox[{"{",RowBox[{"7",",","6464682"}],"}"}],",",RowBox[
+{"{",RowBox[{"8",",","27350456"}],"}"}],",",RowBox[{"{",RowBox[{"9",",","95004072"}],"}"}],",",RowBox[
+{"{",RowBox[{"10",",","283982490"}],"}"}],",",RowBox[{"{",RowBox[{"11",",","754324670"}],"}"}],",",RowBox[
+{"{",RowBox[{"12",",","1821684612"}],"}"}],",",RowBox[{"{",RowBox[{"13",",","4067709516"}],"}"}],",",RowBox[
+{"{",RowBox[{"14",",","8506024982"}],"}"}],",",RowBox[{"{",RowBox[{"15",",","16822697010"}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[16]= ",ExpressionUUID -> "b7fcda7f-ece8-41ce-95a7-be7df0af442f"]},
+Open],ExpressionUUID -> "5f1173b0-8aa4-43f9-a60b-a4641763ea30"],Cell[
+BoxData[RowBox[
+{"(*",RowBox[{"k","=","4"}],"*)"}]],"Input",CellLabel -> "In[1]:= ",ExpressionUUID -> "949978c8-3280-4153-ae81-0250a7884ed2"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"results4"," ","="," ",RowBox[{"Table","[",RowBox[{RowBox[
+{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"4",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]],"Input",CellLabel -> "In[7]:= ",
+ExpressionUUID -> "5e4b2eb3-5f2a-4e1b-84ad-8563f58ad55e"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[{"3",",","7812"}],"}"}],",",RowBox[
+{"{",RowBox[{"4",",","6000732"}],"}"}],",",RowBox[{"{",RowBox[{"5",",","828850160"}],"}"}],",",RowBox[
+{"{",RowBox[{"6",",","38128724910"}],"}"}],",",RowBox[{"{",RowBox[{"7",",","856858754052"}],"}"}],",",RowBox[
+{"{",RowBox[{"8",",","11722360851992"}],"}"}],",",RowBox[{"{",RowBox[{"9",",","111647093496192"}],"}"}],",",RowBox[
+{"{",RowBox[{"10",",","807567269568570"}],"}"}],",",RowBox[{"{",RowBox[{"11",",","4707230299664420"}],"}"}],",",RowBox[
+{"{",RowBox[{"12",",","23062698161984052"}],"}"}],",",RowBox[{"{",RowBox[{"13",",","97963534144477872"}],"}"}],",",RowBox[
+{"{",RowBox[{"14",",","369313246327400102"}],"}"}],",",RowBox[{"{",RowBox[{"15",",","1258250118125770980"}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[7]= ",ExpressionUUID -> "87003e96-0b64-42bc-98f8-f5491c55eb09"]},
+Open],ExpressionUUID -> "57764b2d-b0b9-4f8c-b027-65bfe5a7b730"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{RowBox[{"(*",RowBox[{"k","=","5"}],"*)"}],"\n",RowBox[{"results5"," ","="," ",RowBox[
+{"Table","[",RowBox[{RowBox[{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"5",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]}]],"Input",ExpressionUUID -> "3787ec81-a310-4825-bbce-bbe449d38e24"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[
+{"3",",","580986"}],"}"}],",",RowBox[{"{",RowBox[{"4",",","20442892764"}],"}"}],",",RowBox[
+{"{",RowBox[{"5",",","50820390410180"}],"}"}],",",RowBox[{"{",RowBox[{"6",",","21977869327169310"}],"}"}],",",RowBox[
+{"{",RowBox[{"7",",","3031776844080257742"}],"}"}],",",RowBox[{"{",RowBox[{"8",",","189586772101347563096"}],"}"}],",",RowBox[
+{"{",RowBox[{"9",",","6660747304179593671944"}],"}"}],",",RowBox[{"{",RowBox[{"10",",","151086899096935604867610"}],"}"}],",",RowBox[
+{"{",RowBox[{"11",",","2432514752747773742479970"}],"}"}],",",RowBox[{"{",RowBox[
+{"12",",","29730874656484222810604532"}],"}"}],",",RowBox[{"{",RowBox[{"13",",","289814278376886365788686156"}],"}"}],",",RowBox[
+{"{",RowBox[{"14",",","2338706558881006527354278774"}],"}"}],",",RowBox[{"{",RowBox[
+{"15",",","16079941149554432258574500790"}],"}"}]}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[10]= ",ExpressionUUID -> "cd5f2af0-9a24-45bf-8049-ebc8a23b04cd"]},
+Open],ExpressionUUID -> "ee7c926f-5f90-41a5-9104-8200f559cd2e"],Cell[
+BoxData[RowBox[
+{"(*",RowBox[{"k","=","6"}],"*)"}]],"Input",CellLabel -> "In[12]:= ",ExpressionUUID -> "51d5b08c-8278-4307-be5b-06bb4ba34c7a"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{"results6"," ","="," ",RowBox[{"Table","[",RowBox[{RowBox[
+{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"6",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]],"Input",CellLabel -> "In[11]:= ",
+ExpressionUUID -> "ae8013fa-b650-4aae-8ed9-b7ad2d8b11c4"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[{"3",",","101596896"}],"}"}],",",RowBox[
+{"{",RowBox[{"4",",","380053267505964"}],"}"}],",",RowBox[{"{",RowBox[{"5",",","32921147633979091400"}],"}"}],",",RowBox[
+{"{",RowBox[{"6",",","223479277713132418833390"}],"}"}],",",RowBox[{"{",RowBox[{"7",",","286359202456130400260611752"}],"}"}],",",RowBox[
+{"{",RowBox[{"8",",","115702677512781649307005417016"}],"}"}],",",RowBox[{"{",RowBox[
+{"9",",","20172922880766721483554814468464"}],"}"}],",",RowBox[{"{",RowBox[{"10",",","1859669891770248856476997904547450"}],"}"}],",",RowBox[
+{"{",RowBox[{"11",",","104094652664259277009814001042264080"}],"}"}],",",RowBox[{"{",RowBox[
+{"12",",","3902706595258725042220943436744767652"}],"}"}],",",RowBox[{"{",RowBox[
+{"13",",","105321232530952648899117870043962825336"}],"}"}],",",RowBox[{"{",RowBox[
+{"14",",","2160076836868464110960157773766060869414"}],"}"}],",",RowBox[{"{",RowBox[
+{"15",",","35111392067312546609182417173618968309400"}],"}"}]}],"}"}],StandardForm],
+"Output",CellLabel -> "Out[11]= ",ExpressionUUID -> "3a3cf4c6-e137-4fbb-bca4-8063a4ab7f70"]},
+Open],ExpressionUUID -> "3ee49fa5-b7c2-4b86-9e79-9e06b67f3f5e"],Cell[
+CellGroupData[
+{Cell[
+BoxData[RowBox[{RowBox[{"(*",RowBox[{"k","=","7"}],"*)"}],"\n",RowBox[{"results7"," ","="," ",RowBox[
+{"Table","[",RowBox[{RowBox[{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"7",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]}]],"Input",CellLabel -> "In[13]:= ",
+ExpressionUUID -> "6626aa27-75a6-4c52-9f69-b814f728a6c1"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{RowBox[{"{",RowBox[{"2",",","2"}],"}"}],",",RowBox[{"{",RowBox[{"3",",","41869995708"}],"}"}],",",RowBox[
+{"{",RowBox[{"4",",","38557892676685306572"}],"}"}],",",RowBox[{"{",RowBox[{"5",",","225313329780157255086187280"}],"}"}],",",RowBox[
+{"{",RowBox[{"6",",","40087345104573458097599768622030"}],"}"}],",",RowBox[{"{",RowBox[
+{"7",",","722022905627873731429602000554432412"}],"}"}],",",RowBox[{"{",RowBox[{"8",",","2664533696267986042969615868160108207608"}],"}"}],",",RowBox[
+{"{",RowBox[{"9",",","3101594610276176352440997042418550841885312"}],"}"}],",",RowBox[
+{"{",RowBox[{"10",",","1505933744255415534793832118356329294462055610"}],"}"}],",",RowBox[
+{"{",RowBox[{"11",",","368879277984660057018944113007596468930552762460"}],"}"}],",",RowBox[
+{"{",RowBox[{"12",",","52165666940966795634555971171590612361421172621572"}],"}"}],",",RowBox[
+{"{",RowBox[{"13",",","4701678278015774960172015306840176414525523362269008"}],"}"}],",",RowBox[
+{"{",RowBox[{"14",",","290988136771156891920507578262485806342801661960991302"}],"}"}],",",RowBox[
+{"{",RowBox[{"15",",","13099591719762965565281394772689392638859825972900575740"}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[13]= ",ExpressionUUID -> "fec8ca8d-e175-42d7-bcf6-1038ef439838"]},
+Open],ExpressionUUID -> "06c993eb-bcff-47ef-b5e3-ef410f4bb831"],Cell[
+BoxData[RowBox[
+{RowBox[{"(*",RowBox[{"k","=","8"}],"*)"}],"\n",RowBox[{"results8"," ","="," ",RowBox[
+{"Table","[",RowBox[{RowBox[{"{",RowBox[{"q",","," ",RowBox[{"PC","[",RowBox[{"8",","," ","q"}],"]"}]}],"}"}],","," ",RowBox[
+{"{",RowBox[{"q",","," ","2",","," ","15"}],"}"}]}],"]"}]}]}]],"Input",CellLabel -> "In[5]:= ",
+ExpressionUUID -> "d3bf77f9-6396-4135-b2de-8942f3c9925d"]},StyleDefinitions -> "Default.nb",
+FrontEndVersion -> "14.1 for Wolfram Cloud 1.69 (July 16, 2024)"]

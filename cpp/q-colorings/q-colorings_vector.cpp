@@ -99,3 +99,4 @@ int main() {
 
   cerr << "\nfinished in " << clock() * 1.0 / CLOCKS_PER_SEC << " sec\n";
 }
+// g++ -std=c++20 -O3 q-colorings_vector.cpp -I/opt/homebrew/Cellar/boost/1.85.0/include -L/opt/homebrew/Cellar/boost/1.85.0/lib -lboost_system -o vector

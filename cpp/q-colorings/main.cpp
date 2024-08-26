@@ -4,7 +4,7 @@
 using namespace std;
 using namespace boost::multiprecision;
 
-typedef number<cpp_dec_float<40>> big_float; // floats with 40 digits of precision
+typedef number<cpp_dec_float<60>> big_float; // floats with 40 digits of precision
 typedef cpp_int big_int; // arbitrarily large integers
 typedef pair<int, int> pii; // structure to store graph coordinates
 
@@ -67,10 +67,11 @@ big_float estimate_ratio(int k, int q, int num_simulations, int num_gibbs_steps,
     count += lattice[u_y][u_x] != lattice[v_y][v_x];
   }
   big_float ratio = big_float(count) / num_simulations;
-  cout << ratio << "\n";
+  // cout << ratio << "\n";
   return ratio;
 }
 
+vector<pair<big_int, big_float>> actual = {{2,2},{3,big_float("6.53e+24")},{4,big_float("9.57e+46")},{5,big_float("8.57e+63")},{6,big_float("1.21e+77")},{7,big_float("5.36e+87")},{8,big_float("4.39e+96")},{9,big_float("1.97e+104")},{10,big_float("9.84e+110")}};
 int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
@@ -81,42 +82,58 @@ int main() {
   int n = k * k; // |V|
   int m; // |E|
 
+  cout << "k " << "q " << "Gibbs " << "Est " << "Res⭑ " << "R_err " << "Mean_r " << "Time" << "\n";
   int lattice[K][K];
   create_lattice(k, q, lattice);
   pair<pii, pii> edges[MAX_EDGES]; // store edges
   gen_edges(k, edges, m); // generate edges
-  pii neighbours[K][K][4]; // for storing vertex neighbours
-  int neighbour_count[K][K] = {0}; // for storing number of neighbours for each vertex
 
-  // int num_simulations = static_cast<int>(48 * pow(big_float(4), 3) * pow(big_float(n), 3) / (epsilon * epsilon));
+  // int num_simulations = static_cast<int>(ceil(48 * pow(big_float(4), 3) * pow(big_float(n), 3) / (epsilon * epsilon)));
   int num_simulations = static_cast<int>(pow(big_float(n), 3) / (epsilon * epsilon));
-  // int num_gibbs_steps = abs(static_cast<int>(n * ((2 * log(n) + log(1 / epsilon) + log(8)) / log(big_float(q) / 32) + 1)));
-  int num_gibbs_steps = static_cast<int>(n * (log(n) + log(1 / epsilon)));
-  cout << "Sims: " << num_simulations << ", steps: " << num_gibbs_steps << "\n";
+  // cout << "Sims: " << num_simulations << ", steps: " << num_gibbs_steps << "\n";
+  cout << "Sims: " << num_simulations << "\n";
 
-  big_float Z = pow(big_float(q), n);
-  cout << big_int(Z) << "\n";
+   for (q = 2; q <= 15; q++) {
+    // int num_gibbs_steps = max(3, abs(static_cast<int>(ceil(n * ((2 * log(n) + log(1 / epsilon) + log(8)) / log(big_float(q) / 32) + 1)))));
+    int num_gibbs_steps = static_cast<int>(n * (log(n) + log(1 / epsilon)) * (1 / abs(log(float(q)/64))));
+    big_float real = actual[q-2].second;
+    pii neighbours[K][K][4]; // for storing vertex neighbours
+    int neighbour_count[K][K] = {0}; // for storing number of neighbours for each vertex
+    big_float Z = pow(big_float(q), n);
+    // cout << big_int(Z) << "\n";
+    big_float meanRatio = 0;
+    clock_t start = clock();
+    for (int i = 0; i < m; i++) {
+        const auto &edge = edges[i];
+        const auto &x = edge.first;
+        const auto &y = edge.second;
+        // cout << "(" << x.first << "," << x.second << ")" << " <-> " << "(" << y.first << "," << y.second << ")\n";
 
-  for (int i = 0; i < m; i++) {
-      const auto &edge = edges[i];
-      const auto &x = edge.first;
-      const auto &y = edge.second;
-      cout << "(" << x.first << "," << x.second << ")" << " <-> " << "(" << y.first << "," << y.second << ")\n";
+        big_float ratio = estimate_ratio(k, q, num_simulations, num_gibbs_steps, edge, lattice, neighbours, neighbour_count);
+        Z *= ratio;
+        meanRatio += ratio;
 
-      big_float ratio = estimate_ratio(k, q, num_simulations, num_gibbs_steps, edge, lattice, neighbours, neighbour_count);
-      Z *= ratio;
-      // meanRatio += ratio;
+        // cout << big_int(Z) << "\n";
 
-      cout << big_int(Z) << "\n";
+        neighbours[x.first][x.second][neighbour_count[x.first][x.second]++] = y;
+        neighbours[y.first][y.second][neighbour_count[y.first][y.second]++] = x;
+    }
 
-      neighbours[x.first][x.second][neighbour_count[x.first][x.second]++] = y;
-      neighbours[y.first][y.second][neighbour_count[y.first][y.second]++] = x;
+    big_int rounded_Z = (Z + 0.5).convert_to<big_int>();
+    big_float rZ = rounded_Z.convert_to<big_float>();
+    clock_t end = clock();
+    // cout << "Estimated number of " << q << "-colorings for " << k << "x" << k << " lattice: " << rounded_Z << "\n";
+
+    double time_taken = double(end - start) / CLOCKS_PER_SEC;
+    // k q Z mean secs
+    if (q <= 10) {
+      cout << k << " " << q << " " << num_gibbs_steps << " " << rZ << " " << real << " " << setprecision(4)  << 100*abs(rZ-real)/real << " " << setprecision(5) << meanRatio / big_float(m) << " ";
+      cerr << setprecision(5) << time_taken;
+    } else {
+      cout << setprecision(5) << meanRatio / big_float(m) << ", ";
+    }
+    cout << "\n";
   }
-
-  big_float half(0.5);
-  big_int rounded_Z = (Z + half).convert_to<big_int>();
-  clock_t end = clock();
-  cout << "Estimated number of " << q << "-colorings for " << k << "x" << k << " lattice: " << rounded_Z << "\n";
 
   cerr << "\nfinished in " << clock() * 1.0 / CLOCKS_PER_SEC << " sec\n";
 }
