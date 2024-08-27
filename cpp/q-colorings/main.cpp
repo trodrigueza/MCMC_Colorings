@@ -101,7 +101,7 @@ int main() {
   // cout << "Sims: " << num_simulations << ", steps: " << num_gibbs_steps << "\n";
   cout << "Sims: " << num_simulations << "\n";
 
-   for (q = 2; q <= 15; q++) {
+   for (q = 11; q <= 15; q++) {
     // int num_gibbs_steps = max(3, abs(static_cast<int>(ceil(n * ((2 * log(n) + log(1 / epsilon) + log(8)) / log(big_float(q) / 32) + 1)))));
     int num_gibbs_steps = static_cast<int>(n * (log(n) + log(1 / epsilon)) * (1 / abs(log(float(q)/64))));
     big_float real = actual[q-2].second;
