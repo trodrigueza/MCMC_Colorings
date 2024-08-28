@@ -1841,9 +1841,6 @@ Obtenga valores aproximados para el número de configuraciones factibles en el m
 Reporte de manera similar a lo hecho en el item **(a)** del ejercicio anterior.
 """
 
-# ╔═╡ 4e88b3ea-9b17-407b-a594-b18b328bad46
-
-
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -3684,6 +3681,5 @@ version = "1.4.1+1"
 # ╟─9009028e-4bd2-46c9-a47c-c795070ee18f
 # ╟─0f699a12-b72a-4074-8771-95f650b68a25
 # ╟─8c8e1e48-3656-4bdb-9759-c88a55e08cda
-# ╠═4e88b3ea-9b17-407b-a594-b18b328bad46
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
