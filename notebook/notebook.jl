@@ -44,7 +44,7 @@ md"Con base en el siguiente resultado visto en clase:"
 html"""
 <div style="text-align: center;">
 <img src="https://i.ibb.co/2k8WPcM/Teorema9-1.png"
-	width="600" class=center>
+	width="400" class=center>
 </div>
 """
 
@@ -52,7 +52,7 @@ html"""
 md"Realice experimentos que permitan dar valores aproximados del número de $q$-coloraciones de un lattice $k\times k$."
 
 # ╔═╡ 9fc0084a-2770-4821-929a-3de1a93bb92f
-md"Considere $3 \leq k \leq 20$ y $2 \leq q \leq 15$."
+md"Considere $2 \leq k \leq 20$ y $2 \leq q \leq 15$."
 
 # ╔═╡ ee3e5859-4947-49c1-8ed1-edc5987a4582
 md"""
@@ -68,9 +68,25 @@ html"""
 <h3 style="text-align: center;">Solución:</h3>
 """
 
+# ╔═╡ 609cdee4-0e35-42f8-9b78-44d427d0da12
+md"""
+Antes de comenzar a solucionar los númerales, una $q$-coloración de un grafo es una asignación de colores a sus vértices, usando exactamente $q$ colores distintos, de tal manera que ningún par de vértices adyacentes (conectados por una arista) comparta el mismo color.
+"""
+
+# ╔═╡ 3a69b474-7ea9-494c-a236-3c50413947f3
+html"""
+<div style="text-align: center;">
+<img src="https://i.ibb.co/c16JWFq/3q.png"
+	width="100" class=center alt="Ejemplo 3-coloración del retículo 3x3">
+</div>
+<div style="text-align: center;">
+(Ejemplo 3-coloración del grafo reticular 3x3)
+</div>
+"""
+
 # ╔═╡ 72d3565e-6997-48a3-a6c1-2de34fcb27f1
 md"""
-Antes de comenzar a solucionar los numerales, daremos una breve descripción del algoritmo que implementaremos, el cual se muestra en la demostración del Teorema 9.1 (Libro *Finite Markov chains and algorithm applications*):
+Adiciónalmente, daremos una breve descripción del algoritmo que implementaremos, el cual se muestra en la demostración del Teorema 9.1 (Libro *Finite Markov chains and algorithm applications*):
 
 Sea $G = (V, E)$ el grafo reticular $k\times k$ con $V = \{v_1, v_2, ..., v_{n=k^2}\}$ y $E = \{e_1, e_2, ..., e_{m=2k(k-1)}\}$. Definimos:
 
@@ -1836,9 +1852,248 @@ html"""
 
 # ╔═╡ 8c8e1e48-3656-4bdb-9759-c88a55e08cda
 md"""
-Obtenga valores aproximados para el número de configuraciones factibles en el modelo "Hard Core" para lattices $k\times k$ con $3\leq k \leq 20$.
+Obtenga valores aproximados para el número de configuraciones factibles en el modelo "Hard Core" para lattices $k\times k$ con $2\leq k \leq 20$.
 
 Reporte de manera similar a lo hecho en el item **(a)** del ejercicio anterior.
+"""
+
+# ╔═╡ d22a515c-fc00-428d-9f36-846295efc210
+html"""
+<h3 style="text-align: center;">Solución:</h3>
+"""
+
+# ╔═╡ 0c0f8f82-179c-433b-b570-41100a74bd37
+md"""
+Antes de solucionar el punto, en el modelo Hard Core sobre un grafo $G = (V, E)$ se asigna de manera aleatoria el valor de $0$ o $1$ a cada uno de los vértices, de tal manera que si dos vértices son adyacentes no pueden tomar el valor de $1$ simultáneamente. Las asignaciones de ceros y unos son llamadas configuraciones y aquellas que cumplan la anterior condición son configuraciones factibles.
+"""
+
+# ╔═╡ 50519776-3063-49f3-a7fb-a3949ac1ee99
+html"""
+<div style="text-align: center;">
+<img src="https://i.ibb.co/MD82nSD/2f.jpg"
+	width="300" class=center alt="Ejemplo 3-coloración del retículo 3x3">
+</div>
+<div style="text-align: center;">
+(Configuraciones factibles del grafo reticular 2x2)
+</div>
+"""
+
+# ╔═╡ 458760be-de62-44f2-af1f-a642d831e2e1
+md"""
+Buscando en internet no encontramos resultados sobre las respuestas exactas a este problema, es por esto que implementamos una algoritmo utilizando [programación dinámica](https://es.wikipedia.org/wiki/Programación_dinámica) logrando encontrar respuestas hasta $k=25$ en un tiempo relativamente moderado. Al final del notebook hablamos sobre este acercamiento.
+"""
+
+# ╔═╡ b4401e0b-7df8-44b5-a992-aa703f9a4145
+md"""
+### Solución mediante programación dinámica:
+"""
+
+# ╔═╡ 53a52203-2882-4c6b-81fe-6d4e4a698efe
+md"""
+Cada fila del grafo reticular $k\times k$ puede ser representada como un número binario de longitud $k$, donde cada bit indica si el valor del vértice es $1$ o $0$ (esto se conoce como una máscara de bits).
+
+**Estados:**
+
+$$\text{dp}[i][\textit{mask}]$$ 
+
+representará el número de configuraciones factibles para las primeras $i$ filas, donde la fila $i$ tiene la configuración representada por $\textit{mask}$.
+
+**Casos base:**
+
+$\text{dp}[0][\textit{mask}] = 1$ 
+
+para toda máscara válida $\textit{mask}$ que no tenga bits adyacentes prendidos, esto se puede verificar comprobando que `mask&(mask>>1) == 0`, donde `&` representa la operación bit a bit *and* y *>>* representa la operación de corrimiento de bits hacia la derecha. El resto de estados tendrá el valor inicial de $0$.
+
+**Transiciones:**
+
+Para cada posible máscara de la fila actual $i$, `cur_mask`, y cada posible máscara de la fila anterior $i-1$, `old_mask`: Si `cur_mask` y `old_mask` son válidas, y adicionalmente son compatibles (no hay unos adyacentes verticalmente), entonces 
+
+$$\text{dp}[i][\textit{cur\_mask}] = \text{dp}[i][\textit{cur\_mask}] + \text{dp}[i-1][\textit{old\_mask}].$$
+
+**Respuesta final:**
+
+$$\text{Res} = \sum_{\textit{mask}}dp[k-1][\textit{mask}]$$
+"""
+
+# ╔═╡ 1724968f-2a3f-48f2-9be0-b829a8e20f41
+md"""
+Veamos el ejemplo más sencillo para $k=2$:
+
+**Casos base:**
+
+- Posibles máscaras fila $0$: $\{\color{green}00 \color{black},\color{green} 01\color{black}, \color{green}10\color{black}, \color{red}{11} \color{black}\}$
+
+$\text{dp}[0][00] = \text{dp}[0][01] = \text{dp}[0][10] = 1$
+
+"""
+
+# ╔═╡ 04c2cf76-bd83-400e-b86e-ec44589249a0
+md"""
+**Transiciones:**
+- Posibles máscaras fila $1$: $\{\color{green}00 \color{black},\color{green} 01\color{black}, \color{green}10\color{black}, \color{red}{11} \color{black}\}$
+
+$\text{dp}[1][\color{orange}00\color{black}] = \text{dp}[0][00] + \text{dp}[0][01] + \text{dp}[0][10] = 3$
+
+$\begin{matrix}
+0 & 0\\
+\color{orange}0 & \color{orange}0 
+\end{matrix}$
+
+$\begin{matrix}
+0 & 1\\
+\color{orange}0 & \color{orange}0 
+\end{matrix}$
+
+$\begin{matrix}
+1 & 0\\
+\color{orange}0 & \color{orange}0 
+\end{matrix}$
+
+$\text{dp}[1][\color{orange}01\color{black}] = \text{dp}[0][00] + \text{dp}[0][10] = 2$
+
+$\begin{matrix}
+0 & 0\\
+\color{orange}0 & \color{orange}1
+\end{matrix}$
+
+$\begin{matrix}
+1 & 0\\
+\color{orange}0 & \color{orange}1
+\end{matrix}$
+
+$\text{dp}[1][\color{orange}10\color{black}] = \text{dp}[0][00] + \text{dp}[0][01] = 2$
+
+$\begin{matrix}
+0 & 0\\
+\color{orange}1 & \color{orange}0
+\end{matrix}$
+
+$\begin{matrix}
+0 & 1\\
+\color{orange}1 & \color{orange}0
+\end{matrix}$
+"""
+
+# ╔═╡ f63d0a79-667f-4f2c-9d49-fc0acfc0250a
+md"""
+**Respuesta:**
+
+$\text{Res} = \sum_{\textit{mask}} \text{dp}[1][\textit{mask}] = \text{dp}[1][00] + \text{dp}[1][01] + \text{dp}[1][10] + \text{dp}[1][11] = 7$
+"""
+
+# ╔═╡ f5a4937d-d4e1-4ec0-9eb9-f22052c48ed1
+md"""
+**Complejidad:**
+- Estados: Cada fila se representa con una `bitmask` de $k$ bits. Hay $2^k$ posibles configuraciones (máscaras) para cada fila.
+
+- Transiciones: Para cada fila se consideran todas las posibles configuraciones y se verifica su compatibilídad con todas las configuraciones de la fila anterior. Así, para cada una de las $k$ filas la transición involucra comparar $2^k\times 2^k = 4^k$ pares de máscaras.
+
+Es decir que la complejidad es de $O(k\times 4^k)$, permitiéndonos calcular en un tiempo razonable máximo hasta $k=20$.
+
+Podemos optimizar de la siguiente manera:
+
+- Hay $2^k$ posibles configuraciones para cada fila. Pero hay $l<2^k$ posibles configuraciones factibles para cada fila. Podemos precalcularlas y guardarlas ($O(2^k)$).
+
+- Para cada máscara válida, podemoslos determinar las máscaras que son compatibles con ella (verticalmente). Esto también puede ser precalculado, guardando en una lista las máscaras compatibles para cada máscara válida ($O(l^2)$).
+
+- Para las transiciones, utilizamos la lista precalculada.
+
+Es decir que la complejidad bajaría de $O(k\times4^k)$ a $O(2^k + kl^2)$, -no es mucho pero es trabajo honesto-.
+
+Observación: $l = F(k+2)$ donde $F(i)$ es el $i$-ésimo número de Fibonacci. Teniendo en cuenta que $F(k+2) \approx \frac{\phi^{k+2}}{\sqrt{5}}$, entonces podemos calcular en tiempo razonable (menos de $20$ minutos) hasta $k=25$.
+"""
+
+# ╔═╡ b81d1973-cf1c-41d5-9e60-d4ac0f2ecf21
+md"""
+#### Implementación:
+"""
+
+# ╔═╡ 59ded85c-0ef8-418d-abc9-28b0ddfd8afd
+md"""
+Por facilidad realizamos la implementación en C++, esta se encuentra en el [GitHub](https://github.com/trodrigueza/MCMC_Colorings) en *cpp/hard-core/dp.cpp*.
+"""
+
+# ╔═╡ e1c064db-c1f5-4f83-8b00-cd2a48021068
+md"""
+```cpp
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+using namespace std;
+using namespace boost::multiprecision;
+
+typedef number<cpp_dec_float<60>> big_float; // floats with 40 digits of precision
+typedef cpp_int big_int; // arbitrarily large integers
+
+vector<int> validMasks;
+vector<vector<int>> compatible;
+vector<big_int> dp[2];
+
+bool isValid(int mask) {
+  return (mask & (mask >> 1)) == 0;
+}
+
+void precompute(int k) {
+  int fullMask = (1 << k) - 1;
+  for (int mask = 0; mask <= fullMask; mask++) {
+    if (isValid(mask)) {
+      validMasks.push_back(mask);
+    }
+  }
+
+  compatible.resize(validMasks.size());
+  compatible.resize(validMasks.size());
+  for (int i = 0; i < validMasks.size(); i++) {
+    for (int j = 0; j < validMasks.size(); j++) {
+      if ((validMasks[i] & validMasks[j]) == 0) {
+        compatible[i].push_back(j);
+      }
+    }
+  }
+}
+
+int main() {
+  int k;
+  cout << "Input k: ";
+  cin >> k;
+
+  validMasks.clear();
+  compatible.clear();
+
+  precompute(k);
+
+  dp[0].assign(validMasks.size(), 0);
+  dp[1].assign(validMasks.size(), 0);
+
+  int curr = 0, prev = 1;
+
+  // base cases
+  for (int i = 0; i < validMasks.size(); i++) {
+    dp[curr][i] = 1;
+  }
+
+  // transitions
+  for (int row = 1; row < k; row++) {
+    fill(dp[prev].begin(), dp[prev].end(), 0);
+    swap(curr, prev);
+
+    for (int old_idx = 0; old_idx < validMasks.size(); old_idx++) {
+      if (dp[prev][old_idx] == 0) continue;
+
+      for (int new_idx : compatible[old_idx]) {
+        dp[curr][new_idx] += dp[prev][old_idx];
+      }
+    }
+  }
+
+  // calculate answer
+  big_int total = 0;
+  for (int i = 0; i < validMasks.size(); i++) {
+    total += dp[curr][i];
+  }
+
+  cout << "Number of feasible Hard Core configurations for a " << k << "x" << k << " lattice: " << setprecision(5) << total.convert_to<big_float>() << "\n";
+}
+```
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -3401,6 +3656,8 @@ version = "1.4.1+1"
 # ╟─9fc0084a-2770-4821-929a-3de1a93bb92f
 # ╟─ee3e5859-4947-49c1-8ed1-edc5987a4582
 # ╟─50bfb720-cf21-438f-ac1f-0a4134729478
+# ╟─609cdee4-0e35-42f8-9b78-44d427d0da12
+# ╟─3a69b474-7ea9-494c-a236-3c50413947f3
 # ╟─72d3565e-6997-48a3-a6c1-2de34fcb27f1
 # ╟─17fe42a9-9a29-496d-b0b3-b4f13330c2cd
 # ╟─93025495-2e64-4efb-9bf5-92a3fcf737de
@@ -3681,5 +3938,18 @@ version = "1.4.1+1"
 # ╟─9009028e-4bd2-46c9-a47c-c795070ee18f
 # ╟─0f699a12-b72a-4074-8771-95f650b68a25
 # ╟─8c8e1e48-3656-4bdb-9759-c88a55e08cda
+# ╟─d22a515c-fc00-428d-9f36-846295efc210
+# ╟─0c0f8f82-179c-433b-b570-41100a74bd37
+# ╟─50519776-3063-49f3-a7fb-a3949ac1ee99
+# ╟─458760be-de62-44f2-af1f-a642d831e2e1
+# ╟─b4401e0b-7df8-44b5-a992-aa703f9a4145
+# ╟─53a52203-2882-4c6b-81fe-6d4e4a698efe
+# ╟─1724968f-2a3f-48f2-9be0-b829a8e20f41
+# ╟─04c2cf76-bd83-400e-b86e-ec44589249a0
+# ╟─f63d0a79-667f-4f2c-9d49-fc0acfc0250a
+# ╟─f5a4937d-d4e1-4ec0-9eb9-f22052c48ed1
+# ╟─b81d1973-cf1c-41d5-9e60-d4ac0f2ecf21
+# ╟─59ded85c-0ef8-418d-abc9-28b0ddfd8afd
+# ╟─e1c064db-c1f5-4f83-8b00-cd2a48021068
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

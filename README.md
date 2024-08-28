@@ -1,4 +1,4 @@
-Para información sobre la implementación ver la carpeta `notebook` allí se encuentra el notebook de Julia (También un pdf del mismo).
+Para información sobre la implementación ver la carpeta `notebook` allí se encuentra el notebook de [Pluto](https://plutojl.org) (También un pdf del mismo).
 
 Consideraciones:
 
@@ -11,4 +11,4 @@ Para las q-coloraciones:
 
 - En la carpeta `results\q-colorings` se encuentran todos los resultados obtenidos en formato csv.
 
-- Para el cálulo de resultados se utilizó la implementación realizada con arrays, que es un poco más rápida.
+- Para el cálculo de resultados se utilizó la implementación realizada con arrays, que es un poco más rápida.
