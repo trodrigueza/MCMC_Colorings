@@ -1,3 +1,9 @@
+/*////////////////////////////////////////////////////////////////////////////
+MCMC algorithm for estimating the number of q-colorations of a kxk lattice.
+
+boost/multiprecision is needed -> https://www.boost.org/users/download/
+///////////////////////////////////////////////////////////////////////////*/
+
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 #include <random>
@@ -72,32 +78,41 @@ big_float estimate_ratio(int k, int q, int num_simulations, int num_gibbs_steps,
 int main() {
   int k, q;
   big_float epsilon;
-  cout << "Enter k for lattice size kxk and epsilon: ";
+  cout << "Enter: k q eps\n";
   cin >> k >> q >> epsilon; // read k, q and eps from input
   int n = k * k; // |V|
+  int m = 2*k*(k-1); // |E|
   auto lattice = create_lattice(k, q);
   auto edges = gen_edges(k);
   vector<vector<vector<pii>>> neighbours(k, vector<vector<pii>>(k));
-
+  cout << "n = " << n << ", " << "m = " << m <<".\n";
+  cout << "Let X_i = Z{i}/Z_{i-1} for 1 <= i <= m.\n";
   int num_simulations = static_cast<int>(pow(big_float(n), 3) / (epsilon * epsilon));
   int num_gibbs_steps = abs(static_cast<int>(n * ((2 * log(n) + log(1 / epsilon) + log(8)) / log(big_float(q) / 32) + 1)));
-  cout << "Sims: " << num_simulations << ", steps: " << num_gibbs_steps << "\n";
+  cout << "Simulations: " << num_simulations << ", sampler steps: " << num_gibbs_steps << ".\n";
 
   big_float Z = pow(big_float(q), n); // Z = Z_0
+  big_float meanRatio = 0;
 
   for (const auto &edge : edges) { // edge = {x, y}
       const auto &x = edge.first;
       const auto &y = edge.second;
       big_float ratio = estimate_ratio(k, q, num_simulations, num_gibbs_steps, edge, lattice, neighbours);
       Z *= ratio;
+      meanRatio += ratio;
+      cout << "X_"<< i+1 << " = " << ratio << "\n";
+
       // add edge
       neighbours[x.first][x.second].emplace_back(y);
       neighbours[y.first][y.second].emplace_back(x);
   }
 
+  meanRatio /= m;
   big_int rounded_Z = (Z + 0.5).convert_to<big_int>();
-  cout << "Estimated number of " << q << "-colorings for " << k << "x" << k << " lattice: " << rounded_Z << "\n";
+  cout << "Mean X_i = " << meanRatio << "\n";
+  cout << "\nEstimated number of " << q << "-colorings for " << k << "x" << k << " lattice: " << rounded_Z << ". (Epsilon = " << epsilon << ")\n";
 
   cerr << "\nfinished in " << clock() * 1.0 / CLOCKS_PER_SEC << " sec\n";
 }
+
 // g++ -std=c++20 -O3 q-colorings_vector.cpp -I/opt/homebrew/Cellar/boost/1.85.0/include -L/opt/homebrew/Cellar/boost/1.85.0/lib -lboost_system -o vector
