@@ -98,15 +98,30 @@ Queremos aproximar $Z_{m}$, el cual puede ser re escrito como:
 
 $$Z_{m} = \frac{Z_{m}}{Z_{m-1}} \times \frac{Z_{m-1}}{Z_{m-2}} \times ... \times \frac{Z_2}{Z_1}\times \frac{Z_1}{Z_0}\times Z_0.$$
 
-1. Comenzaremos con $G_0$, el grafo que tiene todos los vértices (en este caso $k \times k$) pero ninguna arista. Esto significa que cualquier asignación de colores es válida, es decir $Z_0 = q^{k^2}$.
+1. Comenzamos con $G_0$, el grafo que tiene todos los vértices pero ninguna arista. Esto significa que cualquier asignación de colores es válida, es decir $Z_0 = q^{k^2}$.
 
-Para cada arista que se añade al grafo, estimaremos la proporción $\frac{Z_i}{Z_{i-1}}$. Para esto, podemos notar que las $q$-coloraciones de $G_i$ son aquellas $q$-coloraciones de $G_{i-1}$ en las que los vértices de la arista añadida en $G_i$ tienen un color distinto. Por lo tanto, la proporción de coloraciones de $G_{i-1}$ que también son válidas en $G_i$ se convierte en $\frac{Z_i}{Z_{i-1}}$. Es decir, $\frac{Z_i}{Z_{i-1}}$ es la probabilidad de que dos vértices conectados por la nueva arista tengan diferentes colores. En este sentido:
+2. Para cada arista $e_i = \{x_i, y_i\}$ que se añade al grafo, estimaremos la proporción $\frac{Z_i}{Z_{i-1}}$. Para esto, podemos notar que las $q$-coloraciones de $G_i$ son aquellas $q$-coloraciones de $G_{i-1}$ en las que los vértices de la arista añadida en $G_i$ tienen un color distinto. Es decir, $\frac{Z_i}{Z_{i-1}}$ es la probabilidad de que dos vértices conectados por la nueva arista tengan diferentes colores. Esto es:
 
-2. Para cada arista $e_i = \{x_i, y_i\}$, estimamos $\frac{Z_i}{Z_{i-1}}$ realizando múltiples simulaciones en las que, utilizando Gibbs sampler, obtenemos una $q$-coloración del grafo $G_{i-1}$, así $\frac{Z_i}{Z_{i-1}}$ será la proporción de simulaciónes que resulten en una coloración en la que $x_i, y_i$ tienen colores distintos.
+$\frac{Z_i}{Z_{i-1}} = P_{G_{i-1}}(X(x_i) \neq X(y_i))$
 
-3. Construimos la estimación final multiplicando sucesivamente estas razones, partiendo desde $Z_0$ (que como vimos es trivial de calcular).
+   donde $X$ es una $q$-coloración aleatoria elegida uniformemente entre las $q$-coloraciones de $G_{i-1}$.
 
-Realizamos múltiples simulaciones para cada arista añadida, permitiendo que la distribución de $q$-coloraciones converja adecuadamente realizando suficientes pasos para el Gibbs sampler.
+3. Para estimar $\frac{Z_i}{Z_{i-1}}$, realizamos $N$ simulaciones utilizando el algoritmo de Gibbs sampler:
+
+   a) Partimos de una $q$-coloración inicial aleatoria.
+
+   b) Realizamos $T$ pasos de Gibbs sampler:
+      - Elejimos un vértice $v\in V$ uniformemente al azar (Esto lo adaptaremos para el Systematic Gibbs Sampler que será descrito más abajo).
+      - Determinamos los colores disponibles para $v$.
+      - Elegimos uniformemente un color entre los disponibles y lo asignamos a $v$.
+
+   c) Después de los $T$ pasos, contamos si $x_i$ y $y_i$ tienen colores diferentes.
+   
+   d) Estimamos $\frac{Z_i}{Z_{i-1}}$ como la proporción de las $N$ simulaciones donde $x_i$ y $y_i$ tienen colores diferentes.
+
+4. Construimos la estimación final multiplicando sucesivamente estas razones, partiendo desde $Z_0$ (que como vimos es trivial de calcular).
+
+$${Z}_m = Z_0 \prod_{i=1}^m {\frac{Z_i}{Z_{i-1}}}$$
 """
 
 # ╔═╡ 17fe42a9-9a29-496d-b0b3-b4f13330c2cd
@@ -289,7 +304,7 @@ Z = BigFloat(q)^n
 
 # ╔═╡ d6f66d6c-f144-4734-95d1-293ede2f3303
 md"""
-Finalmente, establecemos el número de simulaciones y el número de pasos para el systematic Gibbs sampler, para esto utilizamos los resultados del teorema mencionado anteriormente. Como observación, según dichos resultados se deberían hacer $\frac{48d^3n^3}{\epsilon^2}$. Sin embargo realizaremos $\frac{n^3}{\epsilon^2}$ (manteniendo el orden de $n^3$ sobre el número de simulaciones) pues de la otra manera para el ejemplo actual de $k=5$ y $q=10$ habían pasado más de diez mil segundos (2.7 horas) y aún no se obtenía respuesta.
+Finalmente, establecemos el número de simulaciones y el número de pasos para el systematic Gibbs sampler, para esto utilizamos los resultados del teorema mencionado anteriormente. Como observación, según dichos resultados se deberían hacer $\frac{48d^3n^3}{\epsilon^2}$ simulaciones, sin embargo realizaremos $\frac{n^3}{\epsilon^2}$ (manteniendo el orden de $n^3$ sobre el número de simulaciones) pues de la otra manera para el ejemplo actual de $k=5$ y $q=10$ habían pasado más de diez mil segundos (2.7 horas) y aún no se obtenía respuesta.
 """
 
 # ╔═╡ 94f2ea4a-2425-4e09-bf37-6418cc4f38d9
@@ -321,7 +336,7 @@ end
 md"""
 Para estimar el error del resultado utilizaremos *Mathematica*, que nativamente implementa una función que permite calcular el polinomio cromático $P_G$ de un grafo arbitrario $G$. Un resultado de teoría de grafos dice que $P_G(q)$ dice el número exacto de $q$-coloraciones del grafo $G$. 
 
-**Nota:** En el repositorio de [GitHub](https://github.com/trodrigueza/MCMC_Colorings) en la carpeta */Mathematica*, se encuentra un notebook en el que se realizan los cálculos que se mostrarán en el presente informe, en caso de que un resultado sea obtenido mediante *Mathematica* escribiremos $\star$.
+**Nota:** En el repositorio de [GitHub](https://github.com/trodrigueza/MCMC_Colorings) en la carpeta */Mathematica*, se encuentra un notebook en el que se realizan los cálculos que se mostrarán en el presente informe, en caso de que un resultado sea obtenido mediante *Mathematica* (o de una fuente exterior) escribiremos $\star$.
 """
 
 # ╔═╡ 8616ef86-dcd5-4f3d-83e7-f5329b48db4a
@@ -339,7 +354,7 @@ val_real = 151086899096935604867610
 
 # ╔═╡ 5ed31698-dda6-4050-83a2-dc56acb620bf
 md"""
-Es decir que la estimación obtenida tiene un error relativo de:
+Es decir que la estimación obtenida tiene un error relativo $\left(\frac{|x-\hat{x}|}{x}\cdot 100\right)$ de:
 """
 
 # ╔═╡ 62b3fe4f-6546-4b5b-8187-69573f0e2f45
@@ -396,12 +411,13 @@ approx_zmean = BigInt(round(BigFloat(q)^n * mean(ratios)^m))
 
 # ╔═╡ 00aa11ee-8a3d-424e-9ea5-3c8a030c7d0b
 md"""
-¿Existe algún resultado sobre esto? Por ejemplo para $k=9$ y $q=3$ las aristas horizontales a partir de la segunda fila tienen una razón en general cercana a $0.75$ mientras que para el resto de las aristas a $0.666$.
+¿Existe algún resultado sobre esto?
 """
 
 # ╔═╡ d4d9a98a-01ac-478c-a787-37c15dc669e6
-html"""
-<h4>Implementación (C++):</h4>
+md"""
+---
+#### Implementación (C++):
 """
 
 # ╔═╡ 00f6943d-4bbc-44a5-b020-8ebc4287f2d0
@@ -433,7 +449,7 @@ html"""
 md"""
 A continuación mostramos la implementación realizada.
 
-**Nota:** En la carpeta *cpp* del [GitHub](https://github.com/trodrigueza/MCMC_Colorings)e también se encuentra la implementación y detalles sobre la misma.
+**Nota:** En la carpeta *cpp/q-colorings* del [GitHub](https://github.com/trodrigueza/MCMC_Colorings) también se encuentra la implementación y detalles sobre la misma.
 """
 
 # ╔═╡ 4eec39a2-deb3-49ad-91d4-839a4fe02f33
@@ -544,8 +560,9 @@ int main() {
 """
 
 # ╔═╡ cc0ef645-3313-4ca8-92a9-7a7f6e3cf53d
-html"""
-<h3>Reporte de resultados:</h3>
+md"""
+---
+### Reporte de resultados:
 """
 
 # ╔═╡ a07a0f97-56a7-4577-822a-54734af93229
@@ -738,11 +755,6 @@ $\text{num\_gibbs\_steps} = n\left(\left|\frac{2\log{n}+\log{\epsilon^{-1}}+\log
 # ╔═╡ e14facff-e9d5-49f5-84ae-2cd8626d5986
 md"""
 El orden de complejidad total sigue siendo de $Cn^5\log{n}$ sin embargo hemos reducido la constante $C.$
-"""
-
-# ╔═╡ 4465b037-9586-4439-af42-3755aad96e31
-md"""
-
 """
 
 # ╔═╡ 5ac758b9-5cda-40c5-b829-4603b00aef03
@@ -1836,13 +1848,11 @@ md"""
 
 - Los errores relativos fueron generalmente bajos, lo que sugiere que el método de aproximación, a pesar de su naturaleza estocástica, proporciona estimaciones razonablemente precisas.
 
-- La implementación logró resultados útiles en tiempos razonables incluso para configuraciones de grafo más grandes, destacando la utilidad práctica del algoritmo en el problema de contar las $q$-coloraciones de un grafo reticular.
-
 - El algoritmo proporciona un control razonable sobre el error, lo que permite confiar en la precisión de las estimaciones para la toma de decisiones.
 
 - La variación en el número de simulaciones y los pasos del sampler muestra que el algoritmo es sensible a estos parámetros, lo que subraya la importancia de una configuración cuidadosa para maximizar la eficiencia y la efectividad.
 
-- Existe espacio para optimizar aún más el algoritmo ajustando dinámicamente los parámetros en respuesta a las características del grafo y los resultados intermedios de las simulaciones, incluso se podría hacer uso de computación paralela para implementar varios hilos al momento de realizar las estimaciones de los ratios (esta probablemente sería una optimización clave y como anotación, un compañero nuestro ajeno a la clase lo está intentando hacer).
+- Existe espacio para optimizar aún más el algoritmo ajustando dinámicamente los parámetros en respuesta a las características del grafo y los resultados intermedios de las simulaciones, incluso se podría hacer uso de computación paralela para implementar varios hilos al momento de realizar las estimaciones de los ratios (esta probablemente sería una optimización clave y como anotación, un compañero nuestro ajeno a la clase lo intentará hacer).
 """
 
 # ╔═╡ 0f699a12-b72a-4074-8771-95f650b68a25
@@ -1880,7 +1890,7 @@ html"""
 
 # ╔═╡ 458760be-de62-44f2-af1f-a642d831e2e1
 md"""
-Buscando en internet no encontramos resultados sobre las respuestas exactas a este problema, es por esto que implementamos una algoritmo utilizando [programación dinámica](https://es.wikipedia.org/wiki/Programación_dinámica) logrando encontrar respuestas hasta $k=25$ en un tiempo relativamente moderado. Al final del notebook hablamos sobre este acercamiento.
+Buscando en internet no encontramos resultados sobre las respuestas exactas a este problema, es por esto que implementamos una algoritmo utilizando [programación dinámica](https://es.wikipedia.org/wiki/Programación_dinámica) (dp) logrando encontrar respuestas hasta $k=25$ en un tiempo relativamente moderado. Al final del notebook explicamos este enfoque. Las respuestas obtenidas utilizando fueron:
 """
 
 # ╔═╡ a645728d-3627-4f5f-b01e-321d1db730cb
@@ -1889,8 +1899,392 @@ file_path_reshc = "../results/hard-core/dpAnswers/out.csv"
 # ╔═╡ 52387ede-862c-452a-9afa-01eb9cbc6943
 dfreshc = CSV.File(file_path_reshc, delim=' ', header=true) |> DataFrame
 
+# ╔═╡ 5e67e81c-638f-449f-af07-2487021240e6
+md"""
+Para estimar el número de configuraciones factibles del modelo Hard Core podemos adaptar el algoritmo anterior de conteo de $q$-coloraciones: El modelo Hard-Core puede ser visto como un problema de $2$-coloración, donde el $0$ representa un vértice sin ocupar. La restricción de que dos vértices adyacentes no tengan ambos el valor de $1$ es análogo a la restricción del problema de $q$-coloraciones en donde dos vértices adyacentes no pueden tener el mismo color.
+
+**Descripción formal** (Análoga a la del anterior ejercicio):
+"""
+
+# ╔═╡ 86bbaa49-8a57-4e4f-abfd-454eb57c0463
+md"""
+Sea $G = (V, E)$ el grafo reticular $k\times k$ con $V = \{v_1, v_2, ..., v_{n=k^2}\}$ y $E = \{e_1, e_2, ..., e_{m=2k(k-1)}\}$. Definimos:
+
+$$G_0 = (V, \emptyset)$$
+$$G_i = (V, \{e_1, ..., e_i\})$$
+para $1\leq i \leq m$. $Z_i$ será el número de configuraciones factibles del modelo hard-core en el grafo $G_i$.
+
+Queremos aproximar $Z_{m}$, el cual puede ser reescrito como:
+
+$$Z_{m} = \frac{Z_{m}}{Z_{m-1}} \times \frac{Z_{m-1}}{Z_{m-2}} \times ... \times \frac{Z_2}{Z_1}\times \frac{Z_1}{Z_0}\times Z_0.$$
+
+1. Comenzamos con $G_0$, el grafo que tiene todos los vértices pero ninguna arista. En este caso, cualquier asignación de $0$s y $1$s es válida, es decir $Z_0 = 2^{k^2}$.
+
+2. Para cada arista $e_i = \{x_i, y_i\}$ que se añade al grafo, estimamos la proporción $\frac{Z_i}{Z_{i-1}}$. Las configuraciones factibles de $G_i$ son aquellas configuraciones factibles de $G_{i-1}$ en las que los vértices de la arista añadida en $G_i$ no tienen ambos el valor 1. Por lo tanto:
+
+   $$\frac{Z_i}{Z_{i-1}} = P_{G_{i-1}}(X(x_i) = 0 \text{ o } X(y_i) = 0)$$
+
+   donde $X$ es una configuración aleatoria elegida uniformemente entre las configuraciones factibles de $G_{i-1}$.
+
+3. Para estimar $\frac{Z_i}{Z_{i-1}}$, realizamos múltiples simulaciones utilizando el algoritmo MCMC descrito en el Ejemplo $7.2$ del libro *Finite Markov chains and algorithm applications* (adaptado a **Systematic Gibbs Sampler**):
+
+   a) Partimos de una configuración factible inicial (por ejemplo, todos $0$s).
+
+   b) En cada paso del MCMC:
+      - Elegimos un vértice $v \in V$ uniformemente al azar (Esto cambia en la implementación con Systematic Gibbs Sampler).
+      - Lanzamos una moneda justa.
+      - Si sale cara y todos los vecinos de $v$ tienen valor $0$, asignamos $X_{n+1}(v) = 1$; de lo contrario, $X_{n+1}(v) = 0$.
+      - Para todos los demás vértices $w \neq v$, mantenemos $X_{n+1}(w) = X_n(w)$.
+
+   c) Después de un número suficiente de pasos para permitir que la cadena se mezcle, contamos la proporción de configuraciones en las que $x_i = 0$ o $y_i = 0$.
+
+4. Construimos la estimación final multiplicando sucesivamente estas razones, partiendo desde $Z_0 = 2^{k^2}$:
+
+   $$Z_m = Z_0 \prod_{i=1}^m {\frac{Z_i}{Z_{i-1}}}$$
+
+"""
+
+# ╔═╡ dc6d37bf-d8ce-4db2-98be-f69a2ca4338b
+html"""
+<h4>Implementación:</h4>
+"""
+
+# ╔═╡ c6313a94-4403-415a-ab1e-b5b649a284ed
+md"""
+En realidad no cambian muchas cosas.
+
+**Parámetros:**
+"""
+
+# ╔═╡ 4900b650-4b0c-41ac-968d-f450a56a7422
+@bind k1 Slider(1:1:20, default=6)
+
+# ╔═╡ 33830c92-e0af-4457-ace6-d13410589517
+@printf("k = %i", k1)
+
+# ╔═╡ bf5db19f-4a01-489a-b080-ffb0a88e411b
+@bind eps1 Slider(0.1:0.1:1, default=0.7)
+
+# ╔═╡ 0c28834e-68a5-4293-b58b-6395635a3bc4
+@printf("epsilon = %0.1f", eps1)
+
+# ╔═╡ d3e90ebf-f8fa-4d45-b958-3bf365f8bc1f
+num_simulations_hc = Int(ceil((k1*k1)^3/eps1^2))
+
+# ╔═╡ 6c1075bf-abb6-4f30-83fd-0a1b2fc1aea7
+num_gibbs_steps_hc = Int(ceil(abs(k1*k1 * ((2 * log(k1*k1) + log(1 / eps1) + log(8)) / log((2) / 32) + 1))))
+
+# ╔═╡ ef1c4b5d-9b79-4a1b-93ce-6487e84870df
+md"""
+Primero generamos un lattice con la configuración de todos los vértices con valor $0$ (factible).
+"""
+
+# ╔═╡ 9eef9473-3848-4588-b863-ee9b795e87eb
+lattice_hc = [0 for i in 1:k1, j in 1:k1]
+
+# ╔═╡ a7b406ff-3878-4024-b5ff-34067b89bbb2
+md"""
+Generamos las aristas:
+"""
+
+# ╔═╡ 4112e338-ddd2-47e5-8bb3-3128bd168d41
+edges_hc = gen_edges(k1)
+
+# ╔═╡ 2c971739-0ed9-4ea5-8393-594cfeaa7236
+md"""
+Implementamos el Systematic Gibbs Sampler ($k^2$ pasos):
+"""
+
+# ╔═╡ c8d140d0-d0f9-4e45-806f-9e54a0b60ca2
+function gibbs_step_hc(k1::Int, lattice::Array{Int,2}, neighbours)
+    for i in 1:k1, j in 1:k1
+		f = 1
+		if !isempty(neighbours[i,j])
+        	for ne in neighbours[i,j]
+            	if lattice[ne[1], ne[2]] == 1
+					f = 0
+					break
+				end
+        	end
+		end
+
+        if f == 1 && rand(0:1) == 1
+            lattice[i, j] = 1
+		else
+			lattice[i, j] = 0
+		end
+    end
+end
+
+# ╔═╡ dd932974-95d2-432b-81b3-92bdc2ac5a0c
+md"""
+Función para estimar los ratios:
+"""
+
+# ╔═╡ 1a79db3a-c3dd-4940-892a-31f6117616f1
+function estimate_ratio_hc(k1::Int, num_simulations::Int, num_gibbs_steps::Int, edge, lattice, neighbours)
+    uy, ux = edge[1]
+    vy, vx = edge[2]
+    count = 0
+    for _ in 1:num_simulations
+        for _ in 1:ceil(num_gibbs_steps/(k1*k1))+1
+            gibbs_step_hc(k1, lattice, neighbours)
+        end
+        if (lattice[uy, ux] == 0 || lattice[vy, vx] == 0)
+			count += 1
+		end
+    end
+
+    return BigFloat(count) / num_simulations
+end
+
+# ╔═╡ 52e7f7f5-59e8-4820-8bbc-ab1063181f13
+md"""
+Estimamos la respuesta:
+"""
+
+# ╔═╡ b1f31edd-a8bc-432b-89b8-b9c4287c7f68
+begin
+Random.seed!(1234)
+Z_hc = BigFloat(2)^(k1*k1)
+neighbours_hc = [Vector{Tuple{Int,Int}}() for _ in 1:k1, _ in 1:k1]
+ratios_hc = []
+for edge in edges_hc
+	uy, ux = edge[1]
+    vy, vx = edge[2]
+	ratio_hc = estimate_ratio_hc(k1, num_simulations_hc, num_gibbs_steps_hc, edge, lattice_hc, neighbours_hc)
+    Z_hc *= BigFloat(ratio_hc)
+	push!(ratios_hc, BigFloat(ratio_hc))	
+	push!(neighbours_hc[uy, ux], (vy, vx))
+    push!(neighbours_hc[vy, vx], (uy, ux))
+end
+val_est_hc = round(Z_hc)
+@printf("Número estimado de configuraciones factibles para el retículo %dx%d:\n", k1, k1)
+@printf("%d\n", val_est_hc)
+end
+
+# ╔═╡ 19063be6-7607-4189-8677-3e75017a3efa
+md"""
+El número exacto de configuraciones factibles para el grafo reticular $6\times 6$ es $5598861$. Es decir que la estimación obtenida tiene un error relativo del:
+"""
+
+# ╔═╡ 408f4220-16b6-4ed4-be86-fff30f50e4ff
+@printf("%0.3f%%", 100*abs(val_est_hc-5598861)/5598861)
+
+# ╔═╡ e877328e-1f29-4e88-b720-a0ea9ac29b74
+md"""
+Luego fue una muy buena estimación.
+"""
+
+# ╔═╡ a604f419-a73c-41b1-8bc2-891c0ed3e582
+html"""
+<h3>Reporte de resultados:</h3>
+"""
+
+# ╔═╡ 57e8c338-544d-4bd9-81ef-e3440a6d3aad
+md"""
+Presentaremos los resultados obtenidos de la implementación en C++ que se encuentra en la carpeta `cpp/hard-core` en el [GitHub](https://github.com/trodrigueza/MCMC_Colorings).
+"""
+
+# ╔═╡ 21930e01-c3ae-4c7f-9b84-4b0cba242538
+md"""
+**Convención:**
+
+- |$k$| Dimensión retículo.
+- |$\text{Sims}$| Número de simulaciones.
+- |$\text{Gibbs}$| Número de pasos del systematic Gibbs sampler.
+- |$\text{Est}$| Estimación obtenida.
+- |$\text{Res}$| Valor real.
+- |$\text{R\_err}$| Error relativo (%).
+- |$\text{Mean\_r}$| Promedio de las razones obtenidas.
+- |$\text{Time}$| Tiempo en segundos que tardó el programa.
+"""
+
+# ╔═╡ 00c5adbc-9e30-4638-adfd-3cea76c0fdde
+md"""
+Para los siguientes resultados se utilizó:
+
+$\text{num\_sims} = \frac{n^3}{\epsilon^2}$
+
+$\text{gibbs\_steps} = n \left(\frac{\log{n} + \log{\epsilon^{-1}}}{\log{\frac{2}{4d^2}}}\right)$
+"""
+
+# ╔═╡ 8b9e5883-8986-45c1-8d04-d565de087a1a
+md"""
+$k=2...9$
+"""
+
+# ╔═╡ 0f2a76c8-61e9-474a-b4ab-1ad9463d67d1
+md"""
+$\epsilon = 0.2$
+"""
+
+# ╔═╡ 73b6ae2c-edb4-4d6a-a28d-d353a94d325e
+file_path_hca = "../results/hard-core/estimations/k=2..9/eps=0.2.csv"
+
+# ╔═╡ 28e4c64d-154e-4e84-96cd-80f48fcbec26
+dfhca = CSV.File(file_path_hca, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 1cb3d3a4-fc56-41e5-a39d-e20a02de0288
+md"""
+$\epsilon = 0.7$
+"""
+
+# ╔═╡ 188f8098-ff39-4885-b6c3-ce8bad162c15
+file_path_hcb = "../results/hard-core/estimations/k=2..9/eps=0.7.csv"
+
+# ╔═╡ a03ffcc8-7e85-4208-a56b-c0fbed144487
+dfhcb = CSV.File(file_path_hcb, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 8ef9401b-c354-4ac9-b6b9-a386ed3c5612
+md"""
+$\epsilon = 1$
+"""
+
+# ╔═╡ 44dd1186-6afe-4d89-b73b-843170c44a27
+file_path_hcc = "../results/hard-core/estimations/k=2..9/eps=1.csv"
+
+# ╔═╡ 16ee1499-8048-4603-ada0-f8bac2b1fd0c
+dfhcc = CSV.File(file_path_hcc, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ cf2bd14f-7e0e-4eff-af92-6cde28108a58
+begin
+phca1 = plot(dfreshc.k[1:8], dfreshc.Res[1:8], label="Respuesta Real", linewidth=0.5, marker=:star, color=:red, markersize=3, size=(550, 350), yscale=:log10, leg=:bottomright, ylimits = (1e0, 1e18), title="Estimación vs Respuesta Real", titlefontsize=10, labelfontsize=8, legendfontsize=6);
+	
+plot!(dfhca.k[1:8], dfhca.Est[1:8], label="Estimación eps = 0.2", xlabel="k", ylabel="Valor", linewidth=0.7, marker=:rect, color=:blue, alpha=0.5, markersize=4);
+
+plot!(dfhcb.k[1:8], dfhcb.Est[1:8], label="Estimación eps = 0.7", xlabel="k", ylabel="Valor", linewidth=0.7, marker=:hexagon, color=:green, alpha=0.5, markersize=4);
+
+plot!(dfhcc.k[1:8], dfhcc.Est[1:8], label="Estimación eps = 1", xlabel="k", ylabel="Valor", linewidth=0.7, marker=:diamond, color=:orange, alpha=0.5, markersize=5);
+
+phca2 = plot(dfhca.k[1:8], dfhca.R_err[1:8], label="eps = 0.2", color=:blue, xlabel="k", ylabel="Error relativo (%)", marker=:rect, size=(550, 350), title="Comparación errores relativos", titlefontsize=10, labelfontsize=8, legendfontsize=6, ylimits=(0, 8))
+
+plot!(dfhcb.k[1:8], dfhcb.R_err[1:8], label="eps = 0.7", xlabel="k", linewidth=0.7, marker=:hexagon, color=:green, alpha=0.5, markersize=4);
+	
+plot!(dfhcc.k[1:8], dfhcc.R_err[1:8], label="eps = 1", color=:orange, marker=:diamond, secondary=true)
+
+phca3 = bar(dfhca.k[1:8], dfhca.Time[1:8], label="eps = 0.2", color=:blue, xlabel="q", ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.5, title="Comparación tiempos", titlefontsize=10, labelfontsize=8, legendfontsize=6, ylimits = (0, 500), leg=:topleft)
+
+bar!(dfhcb.k[1:8], dfhcb.Time[1:8], label="eps = 0.7", color=:green, ylabel="Tiempo(seg)", size=(550, 350), bar_width=0.55)
+	
+bar!(dfhcc.k[1:8], dfhcc.Time[1:8], label="eps = 1", color=:orange, secondary=true, bar_width=0.6)
+	
+bar!(dfreshc.k[1:8], dfreshc.Time[1:8], label="dp", color=:red, secondary=true, bar_width=0.6)
+	
+plot(phca1, phca3, phca2, layout=layout, size=(700, 500))
+end
+
+# ╔═╡ e8999de2-9d93-437e-806a-994daa9928db
+md"""
+Para los siguientes resultados fijamos el número de simulación a $1e6$.
+"""
+
+# ╔═╡ 86372603-e49f-45a2-a798-8956dbb87051
+md"""
+$k=10...25$
+"""
+
+# ╔═╡ 3b39aadd-3ea2-4bed-848e-d661b2e6a141
+md"""
+$\epsilon=0.7$
+"""
+
+# ╔═╡ 98833e3a-7041-46d6-9553-cffd8fec5a0a
+md"""
+$\text{num\_sims} = 1000000$
+"""
+
+# ╔═╡ 0e5e9587-02a9-4034-a142-1291c6396792
+file_path_hcd = "../results/hard-core/estimations/k=10..25/eps=0.7.csv"
+
+# ╔═╡ 604ce5c3-ac1b-4236-ae33-a2d14c4a35f6
+dfhcd = CSV.File(file_path_hcd, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ d06b5dfc-1713-44a3-bb7c-b2195b8582c4
+md"""
+$\epsilon=1$
+"""
+
+# ╔═╡ 73f27435-bde2-4a39-82d5-d45717a59e21
+md"""
+$\text{num\_sims} = 1000000$
+"""
+
+# ╔═╡ 9bf8014a-9de0-407d-a591-978a7daed43f
+file_path_hce = "../results/hard-core/estimations/k=10..25/eps=1.csv"
+
+# ╔═╡ bd10a9a0-5a58-48ab-8cd2-eb9a900d0873
+dfhce = CSV.File(file_path_hce, delim=' ', header=true) |> DataFrame
+
+# ╔═╡ 2211c46e-c4ba-4b02-96a8-2af0624f87b8
+begin
+phcb1 = plot(dfreshc.k[9:24], dfreshc.Res[9:24], label="Respuesta Real", linewidth=0.5, marker=:star, color=:red, markersize=3, size=(550, 350), yscale=:log10, leg=:bottomright, ylimits = (1e15, 1e115), title="Estimación vs Respuesta Real", titlefontsize=10, labelfontsize=8, legendfontsize=6);
+	
+plot!(dfhcd.k[1:16], dfhcd.Est[1:16], label="Estimación eps = 0.7", xlabel="k", ylabel="Valor", linewidth=0.7, marker=:hexagon, color=:green, alpha=0.5, markersize=4);
+
+plot!(dfhce.k[1:16], dfhce.Est[1:16], label="Estimación eps = 1", xlabel="k", ylabel="Valor", linewidth=0.7, marker=:diamond, color=:orange, alpha=0.5, markersize=5);
+
+phcb2 = plot(dfhcd.k[1:16], dfhcd.R_err[1:16], label="eps = 0.7", xlabel="k", linewidth=0.7, marker=:hexagon, color=:green, alpha=0.5, markersize=4, ylabel="Error relativo (%)", size=(550, 350), title="Comparación errores relativos", titlefontsize=10, labelfontsize=8, legendfontsize=6, ylimits=(0, 2.3));
+	
+plot!(dfhce.k[1:16], dfhce.R_err[1:16], label="eps = 1", color=:orange, marker=:diamond, secondary=true)
+
+phcb3 = bar(dfhcd.k[1:16], dfhcd.Time[1:16], xlabel="k", ylabel="Tiempo(seg)", label="eps = 0.7", color=:green, size=(550, 350), bar_width=0.5, title="Comparación tiempos", titlefontsize=10, labelfontsize=8, legendfontsize=6)
+	
+bar!(dfhce.k[1:16], dfhce.Time[1:16], label="eps = 1", color=:orange, secondary=true, bar_width=0.6)
+	
+bar!(dfreshc.k[9:24], dfreshc.Time[9:24], label="dp", color=:red, secondary=true, bar_width=0.6)
+	
+plot(phcb1, phcb3, phcb2, layout=layout, size=(600, 400))
+end
+
+# ╔═╡ 97a7625c-6d23-4cf3-b2b1-408680751942
+md"""
+#### Promedio ratios:
+"""
+
+# ╔═╡ 1093ca76-cd23-4688-bd8c-80bc9d18b045
+md"""
+Considerando $5\leq k \leq 25$:
+"""
+
+# ╔═╡ d7ca2f97-0c8c-463c-b898-bf61317f7284
+begin
+plhcr1 = plot(dfhca.k[4:8], dfhca.Mean_r[4:8], label="eps = 0.2", color=:blue, ylabel="Promedios", marker=:circle, size=(600, 400), alpha = 0.5, leg=:right, titlefontsize=10, labelfontsize=8, legendfontsize=7)
+
+plot!(dfhcd.k, dfhcd.Mean_r, label="eps = 0.7", marker=:utriangle, color=:green, alpha = 0.5)
+
+title!("Comparación promedios de los ratios")
+xlabel!("k")
+
+data = vcat(dfhca.Mean_r[4:8], dfhcd.Mean_r)
+plhcr2 = boxplot(["Datos"], data, title="Promedio ratios - Box Plot", ylabel="Promedios", legend=false, size=(400,300), titlefontsize=10, labelfontsize=8, legendfontsize=7, color = :orange, alpha=0.5)
+
+layout3 = @layout [a; b]
+plot(plhcr1, plhcr2, layout = layout3, size = (600, 400))
+end
+
+# ╔═╡ 0521270d-6318-41ca-b01b-e0773544acc0
+md"""
+Podemos observar que los valores son muy consistentes, sugiriendo una cierta independecia al valor de $k$, como lo notamos en el ejercicio de las $q$-coloraciones.
+"""
+
+# ╔═╡ 36df72a6-2b28-4ecb-b11d-3d297500a8b2
+md"""
+### Conclusiones:
+"""
+
+# ╔═╡ 3fefdf33-231f-4d58-a6e3-5c171487b00e
+md"""
+- Aunque la solución con programación dinámica (dp) parece ser más rápida, eventualmente para $k$s grandes esto dejará de ser así pues la complejidad de la dp es exponencial, abajo hablamos de esto.
+
+- Fijando el número de simulaciones -poniéndole el tope de $1e6$- obtenemos resultados excelentes para $\epsilon\approx 1$, con seguridad podríamos intentar bajar este tope según los parámetros para obtener respuestas confiables en tiempos mucho más rápidos.
+
+- Es un excelente método para estimar las respuestas al problema de contar las configuraciones factibles del modelo Hard Core de un grafo reticular.
+"""
+
 # ╔═╡ b4401e0b-7df8-44b5-a992-aa703f9a4145
 md"""
+---
 ### Solución mediante programación dinámica:
 """
 
@@ -1990,9 +2384,8 @@ $\text{Res} = \sum_{\textit{mask}} \text{dp}[1][\textit{mask}] = \text{dp}[1][00
 # ╔═╡ f5a4937d-d4e1-4ec0-9eb9-f22052c48ed1
 md"""
 **Complejidad:**
-- Estados: Cada fila se representa con una `bitmask` de $k$ bits. Hay $2^k$ posibles configuraciones (máscaras) para cada fila.
 
-- Transiciones: Para cada fila se consideran todas las posibles configuraciones y se verifica su compatibilídad con todas las configuraciones de la fila anterior. Así, para cada una de las $k$ filas la transición involucra comparar $2^k\times 2^k = 4^k$ pares de máscaras.
+En cuanto al número de estados, cada fila se representa con una `bitmask` de $k$ bits. Hay $2^k$ posibles configuraciones (máscaras) para cada fila. En cuanto a las transiciones, en cada fila se consideran todas las posibles configuraciones y se verifica su compatibilídad con todas las configuraciones de la fila anterior. Así, para cada una de las $k$ filas la transición involucra comparar $2^k\times 2^k = 4^k$ pares de máscaras.
 
 Es decir que la complejidad es de $O(k\times 4^k)$, permitiéndonos calcular en un tiempo razonable máximo hasta $k=20$.
 
@@ -2000,13 +2393,13 @@ Podemos optimizar de la siguiente manera:
 
 - Hay $2^k$ posibles configuraciones para cada fila. Pero hay $l<2^k$ posibles configuraciones factibles para cada fila. Podemos precalcularlas y guardarlas ($O(2^k)$).
 
-- Para cada máscara válida, podemoslos determinar las máscaras que son compatibles con ella (verticalmente). Esto también puede ser precalculado, guardando en una lista las máscaras compatibles para cada máscara válida ($O(l^2)$).
+- Para cada máscara válida, podemos determinar las máscaras que son compatibles con ella (verticalmente). Esto también puede ser precalculado, guardando en una lista las máscaras compatibles para cada máscara válida ($O(l^2)$).
 
 - Para las transiciones, utilizamos la lista precalculada.
 
-Es decir que la complejidad bajaría de $O(k\times4^k)$ a $O(2^k + kl^2)$, -no es mucho pero es trabajo honesto-.
+Es decir que la complejidad bajaría de $O(k\times4^k)$ a $O(2^k + kl^2)$, -que no es mucho pero es trabajo honesto-.
 
-Observación: $l = F(k+2)$ donde $F(i)$ es el $i$-ésimo número de Fibonacci. Teniendo en cuenta que $F(k+2) \approx \frac{\phi^{k+2}}{\sqrt{5}}$, entonces podemos calcular en tiempo razonable (menos de $20$ minutos) hasta $k=25$.
+Observación: $l$ resulta ser $F(k+2)$ donde $F(i)$ es el $i$-ésimo número de Fibonacci. Teniendo en cuenta que $F(k+2) \approx \frac{\phi^{k+2}}{\sqrt{5}}$, entonces podemos calcular en tiempo razonable (menos de $20$ minutos) hasta $k=25$.
 """
 
 # ╔═╡ b81d1973-cf1c-41d5-9e60-d4ac0f2ecf21
@@ -2019,87 +2412,11 @@ md"""
 Por facilidad realizamos la implementación en C++, esta se encuentra en el [GitHub](https://github.com/trodrigueza/MCMC_Colorings) en *cpp/hard-core/dp.cpp*.
 """
 
-# ╔═╡ e1c064db-c1f5-4f83-8b00-cd2a48021068
+# ╔═╡ 8d9c27ec-5331-4240-9942-3c21c4773207
 md"""
-```cpp
-#include <boost/multiprecision/cpp_dec_float.hpp>
-#include <boost/multiprecision/cpp_int.hpp>
-using namespace std;
-using namespace boost::multiprecision;
-
-typedef number<cpp_dec_float<60>> big_float; // floats with 40 digits of precision
-typedef cpp_int big_int; // arbitrarily large integers
-
-vector<int> validMasks;
-vector<vector<int>> compatible;
-vector<big_int> dp[2];
-
-bool isValid(int mask) {
-  return (mask & (mask >> 1)) == 0;
-}
-
-void precompute(int k) {
-  int fullMask = (1 << k) - 1;
-  for (int mask = 0; mask <= fullMask; mask++) {
-    if (isValid(mask)) {
-      validMasks.push_back(mask);
-    }
-  }
-
-  compatible.resize(validMasks.size());
-  compatible.resize(validMasks.size());
-  for (int i = 0; i < validMasks.size(); i++) {
-    for (int j = 0; j < validMasks.size(); j++) {
-      if ((validMasks[i] & validMasks[j]) == 0) {
-        compatible[i].push_back(j);
-      }
-    }
-  }
-}
-
-int main() {
-  int k;
-  cout << "Input k: ";
-  cin >> k;
-
-  validMasks.clear();
-  compatible.clear();
-
-  precompute(k);
-
-  dp[0].assign(validMasks.size(), 0);
-  dp[1].assign(validMasks.size(), 0);
-
-  int curr = 0, prev = 1;
-
-  // base cases
-  for (int i = 0; i < validMasks.size(); i++) {
-    dp[curr][i] = 1;
-  }
-
-  // transitions
-  for (int row = 1; row < k; row++) {
-    fill(dp[prev].begin(), dp[prev].end(), 0);
-    swap(curr, prev);
-
-    for (int old_idx = 0; old_idx < validMasks.size(); old_idx++) {
-      if (dp[prev][old_idx] == 0) continue;
-
-      for (int new_idx : compatible[old_idx]) {
-        dp[curr][new_idx] += dp[prev][old_idx];
-      }
-    }
-  }
-
-  // calculate answer
-  big_int total = 0;
-  for (int i = 0; i < validMasks.size(); i++) {
-    total += dp[curr][i];
-  }
-
-  cout << "Number of feasible Hard Core configurations for a " << k << "x" << k << " lattice: " << setprecision(5) << total.convert_to<big_float>() << "\n";
-}
-```
+## Bibliografía:
+- Häggström O. Finite Markov Chains and Algorithmic Applications. Cambridge University Press; 2002.
+- Colorings of grid graphs - OeisWiki. (n.d.). https://oeis.org/wiki/Colorings_of_grid_graphs
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -3684,7 +4001,7 @@ version = "1.4.1+1"
 # ╟─5f264e21-ca5b-49bf-994e-22e630984e28
 # ╟─668f9bfc-b97e-437f-8525-b9812f705932
 # ╟─cf84e4b2-99cb-4e3f-82bc-7fbf12d5bcfb
-# ╠═77c1f5c0-a44e-4b82-9490-550c320d5fa9
+# ╟─77c1f5c0-a44e-4b82-9490-550c320d5fa9
 # ╟─202922d1-1f4a-47c4-bad7-31ddd646594e
 # ╟─dc6111e4-9865-47a3-86d3-135de9b098ce
 # ╟─f8e4bf99-1a61-46bf-9836-bf79fe1a8a3f
@@ -3703,17 +4020,17 @@ version = "1.4.1+1"
 # ╟─cd95cd1f-27a1-4525-893e-378270fc3657
 # ╟─183fc6fb-2ef1-4056-a37f-2d606abdab69
 # ╟─5ed31698-dda6-4050-83a2-dc56acb620bf
-# ╠═62b3fe4f-6546-4b5b-8187-69573f0e2f45
+# ╟─62b3fe4f-6546-4b5b-8187-69573f0e2f45
 # ╟─e7b1d579-3300-49cd-8e0d-28f942f99be9
 # ╟─a9ba504b-3ecc-4e80-b063-06242abb23ca
 # ╠═6fdef38f-a45a-4cfe-9694-a0ac144f16b9
-# ╠═fdc76661-9c2e-47f0-8716-a3d719e88998
+# ╟─fdc76661-9c2e-47f0-8716-a3d719e88998
 # ╟─aa182161-2906-4e5d-aa08-3153c19f97e0
 # ╠═57afe92f-88a4-4fdc-83db-5d58cc525e73
 # ╟─205399df-28be-4674-a1c2-35bc5db6e765
 # ╟─62e7c451-ba95-496c-8f16-5d7deea3388a
 # ╠═899c7974-3284-4eb8-bf7e-7d5a3028ec04
-# ╠═52042204-a585-46b1-9757-694b9f1de30c
+# ╟─52042204-a585-46b1-9757-694b9f1de30c
 # ╟─0d70f4d5-08d3-43bc-ae1d-eb856ccfb248
 # ╠═1934af33-79b9-430d-8667-4fb9cc99bddf
 # ╟─33cf49f4-8b88-4d6f-a3d0-42a778836013
@@ -3759,7 +4076,6 @@ version = "1.4.1+1"
 # ╟─9c29cb2c-d2c3-4815-ad8e-c53a7d34722d
 # ╟─aa14e81b-0530-4579-8e97-c62d49046c60
 # ╟─e14facff-e9d5-49f5-84ae-2cd8626d5986
-# ╟─4465b037-9586-4439-af42-3755aad96e31
 # ╟─5ac758b9-5cda-40c5-b829-4603b00aef03
 # ╟─ce6c8449-c44d-4309-b5e1-00b4adf35950
 # ╟─971394c0-4918-4e37-9324-54333cd3816e
@@ -3950,6 +4266,61 @@ version = "1.4.1+1"
 # ╟─458760be-de62-44f2-af1f-a642d831e2e1
 # ╟─a645728d-3627-4f5f-b01e-321d1db730cb
 # ╟─52387ede-862c-452a-9afa-01eb9cbc6943
+# ╟─5e67e81c-638f-449f-af07-2487021240e6
+# ╟─86bbaa49-8a57-4e4f-abfd-454eb57c0463
+# ╟─dc6d37bf-d8ce-4db2-98be-f69a2ca4338b
+# ╟─c6313a94-4403-415a-ab1e-b5b649a284ed
+# ╟─33830c92-e0af-4457-ace6-d13410589517
+# ╟─4900b650-4b0c-41ac-968d-f450a56a7422
+# ╟─0c28834e-68a5-4293-b58b-6395635a3bc4
+# ╟─bf5db19f-4a01-489a-b080-ffb0a88e411b
+# ╠═d3e90ebf-f8fa-4d45-b958-3bf365f8bc1f
+# ╠═6c1075bf-abb6-4f30-83fd-0a1b2fc1aea7
+# ╟─ef1c4b5d-9b79-4a1b-93ce-6487e84870df
+# ╠═9eef9473-3848-4588-b863-ee9b795e87eb
+# ╟─a7b406ff-3878-4024-b5ff-34067b89bbb2
+# ╠═4112e338-ddd2-47e5-8bb3-3128bd168d41
+# ╟─2c971739-0ed9-4ea5-8393-594cfeaa7236
+# ╠═c8d140d0-d0f9-4e45-806f-9e54a0b60ca2
+# ╟─dd932974-95d2-432b-81b3-92bdc2ac5a0c
+# ╠═1a79db3a-c3dd-4940-892a-31f6117616f1
+# ╟─52e7f7f5-59e8-4820-8bbc-ab1063181f13
+# ╠═b1f31edd-a8bc-432b-89b8-b9c4287c7f68
+# ╟─19063be6-7607-4189-8677-3e75017a3efa
+# ╠═408f4220-16b6-4ed4-be86-fff30f50e4ff
+# ╟─e877328e-1f29-4e88-b720-a0ea9ac29b74
+# ╟─a604f419-a73c-41b1-8bc2-891c0ed3e582
+# ╟─57e8c338-544d-4bd9-81ef-e3440a6d3aad
+# ╟─21930e01-c3ae-4c7f-9b84-4b0cba242538
+# ╟─00c5adbc-9e30-4638-adfd-3cea76c0fdde
+# ╟─8b9e5883-8986-45c1-8d04-d565de087a1a
+# ╟─0f2a76c8-61e9-474a-b4ab-1ad9463d67d1
+# ╟─73b6ae2c-edb4-4d6a-a28d-d353a94d325e
+# ╟─28e4c64d-154e-4e84-96cd-80f48fcbec26
+# ╟─1cb3d3a4-fc56-41e5-a39d-e20a02de0288
+# ╟─188f8098-ff39-4885-b6c3-ce8bad162c15
+# ╟─a03ffcc8-7e85-4208-a56b-c0fbed144487
+# ╟─8ef9401b-c354-4ac9-b6b9-a386ed3c5612
+# ╟─44dd1186-6afe-4d89-b73b-843170c44a27
+# ╟─16ee1499-8048-4603-ada0-f8bac2b1fd0c
+# ╟─cf2bd14f-7e0e-4eff-af92-6cde28108a58
+# ╟─e8999de2-9d93-437e-806a-994daa9928db
+# ╟─86372603-e49f-45a2-a798-8956dbb87051
+# ╟─3b39aadd-3ea2-4bed-848e-d661b2e6a141
+# ╟─98833e3a-7041-46d6-9553-cffd8fec5a0a
+# ╟─0e5e9587-02a9-4034-a142-1291c6396792
+# ╟─604ce5c3-ac1b-4236-ae33-a2d14c4a35f6
+# ╟─d06b5dfc-1713-44a3-bb7c-b2195b8582c4
+# ╟─73f27435-bde2-4a39-82d5-d45717a59e21
+# ╟─9bf8014a-9de0-407d-a591-978a7daed43f
+# ╟─bd10a9a0-5a58-48ab-8cd2-eb9a900d0873
+# ╟─2211c46e-c4ba-4b02-96a8-2af0624f87b8
+# ╟─97a7625c-6d23-4cf3-b2b1-408680751942
+# ╟─1093ca76-cd23-4688-bd8c-80bc9d18b045
+# ╟─d7ca2f97-0c8c-463c-b898-bf61317f7284
+# ╟─0521270d-6318-41ca-b01b-e0773544acc0
+# ╟─36df72a6-2b28-4ecb-b11d-3d297500a8b2
+# ╟─3fefdf33-231f-4d58-a6e3-5c171487b00e
 # ╟─b4401e0b-7df8-44b5-a992-aa703f9a4145
 # ╟─53a52203-2882-4c6b-81fe-6d4e4a698efe
 # ╟─1724968f-2a3f-48f2-9be0-b829a8e20f41
@@ -3958,6 +4329,6 @@ version = "1.4.1+1"
 # ╟─f5a4937d-d4e1-4ec0-9eb9-f22052c48ed1
 # ╟─b81d1973-cf1c-41d5-9e60-d4ac0f2ecf21
 # ╟─59ded85c-0ef8-418d-abc9-28b0ddfd8afd
-# ╟─e1c064db-c1f5-4f83-8b00-cd2a48021068
+# ╟─8d9c27ec-5331-4240-9942-3c21c4773207
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
