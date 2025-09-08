@@ -1,25 +1,25 @@
-Para información sobre la implementaciones ver la carpeta `notebook` allí se encuentra el notebook de [Pluto](https://plutojl.org) (También un pdf del mismo).
+For information about the implementations, see the `notebook` folder. There you will find the [Pluto](https://plutojl.org) notebook (also available as a PDF).
 
-Consideraciones:
+Considerations:
 
-- Las implementaciones en Julia se encuentran en el notebook.
-- Las imágenes que se encuentran en la carpeta `images` fueron generadas desde Julia (también están en el notebook).
-- [Sitio web de la clase](https://sites.google.com/unal.edu.co/fohernandezr/docencia/materias/cadenas-de-markov-y-aplicaciones).
+- The Julia implementations are included in the notebook.
+- The images in the `images` folder were generated using Julia (and are also in the notebook).
+- [Course website](https://sites.google.com/unal.edu.co/fohernandezr/docencia/materias/cadenas-de-markov-y-aplicaciones).
 
-Para las q-coloraciones:
+For q-colorings:
 
-- En la carpeta `cpp/q-colorings` se encuentran dos implementaciones realizadas en C++, una utilizando arrays (`main.cpp`) y una utilizando vectores (`vector.cpp`). `est.cpp` es un pequeño programa para las estimaciones realizadas con el promedio de los ratios ($k=14..20$).
+- In the `cpp/q-colorings` folder there are two implementations in C++: one using arrays (`main.cpp`) and one using vectors (`vector.cpp`). The file `est.cpp` is a small program for the estimates made using the average of the ratios ($k=14..20$).
 
-- En la carpeta `results/q-colorings` se encuentran todos los resultados obtenidos en formato csv.
+- In the `results/q-colorings` folder you will find all results in CSV format.
 
-- En la carpeta `mathematica` se encuentran los cálculos exactos hasta $k=7$, los demás resultados los sacamos de [aquí](https://oeis.org/wiki/Colorings_of_grid_graphs).
+- In the `mathematica` folder there are exact calculations up to $k=7$. The other results were taken from [here](https://oeis.org/wiki/Colorings_of_grid_graphs).
 
-- Para el cálculo de las estimaciones se utilizó en su mayoría la implementación realizada con arrays, que es un poco más rápida.
+- For the estimates, we mostly used the array-based implementation, which is slightly faster.
 
-Para hard-core:
+For hard-core:
 
-- En la carpeta `cpp/hard-core` se encuentra la implementación realizada en C++ (`main.cpp`).
+- In the `cpp/hard-core` folder you will find the C++ implementation (`main.cpp`).
 
-- Adicionalmente, en `cpp/hard-core` se encuentra la implementación utilizando programación dinámica para calcular los valores reales -exactos- (`dp.cpp`).
+- Additionally, in `cpp/hard-core` there is an implementation using dynamic programming to calculate the exact values (`dp.cpp`).
 
-- En la carpeta `results/hard-core` se encuentran todos los resultados obtenidos en formato csv.
+- In the `results/hard-core` folder you will find all results in CSV format.
